@@ -51,15 +51,15 @@ export interface Transaction {
     | "admin_debit"
     | "admin_adjustment";
   amount_cents: number;
-  amount_formatted: string;
+  amount_formatted?: string;
   description: string;
   plan_id?: string | null;
-  balance_after_cents: number;
+  balance_after_cents?: number;
   created_at: string;
 }
 
 export interface TransactionsData {
-  items: Transaction[];
+  transactions: Transaction[];
   pagination: Pagination;
 }
 
@@ -172,7 +172,7 @@ export interface Plan {
 }
 
 export interface PlansListData {
-  items: Plan[];
+  plans: Plan[];
   pagination: Pagination;
 }
 
