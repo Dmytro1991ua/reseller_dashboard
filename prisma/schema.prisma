@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model DashboardSession {
+  id           String    @id @default(cuid())
+  apiKeyHash   String    // SHA-256 of the API key — identifies reseller without storing the key
+  ipAddress    String?
+  userAgent    String?
+  loginAt      DateTime  @default(now())
+  lastActiveAt DateTime  @default(now())
+  loggedOutAt  DateTime?
+
+  auditLogs AuditLog[]
+
+  @@index([apiKeyHash])
+  @@index([loginAt])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  sessionId  String?
+  apiKeyHash String   // which reseller performed the action
+  action     String   // e.g. "list_plans", "create_plan", "cancel_plan", "view_balance"
+  method     String   // GET, POST, DELETE, etc.
+  path       String   // the FlashProxy API path called
+  statusCode Int?
+  durationMs Int?
+  metadata   String?  // JSON of extra context (plan_id, product, cost, etc.)
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  session DashboardSession? @relation(fields: [sessionId], references: [id])
+
+  @@index([apiKeyHash])
+  @@index([createdAt])
+  @@index([action])
+}
