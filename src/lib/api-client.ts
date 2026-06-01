@@ -1,16 +1,10 @@
 /**
  * Server-side FlashProxy API client.
- * The API key lives only in FLASHPROXY_API_KEY (no NEXT_PUBLIC_ prefix).
- * Call this from Server Components, Route Handlers, or Server Actions only.
+ * Pass the reseller's API key (from iron-session) as the first argument.
+ * Call only from Server Components, Route Handlers, or Server Actions.
  */
 
 import { apiConfig } from "@/lib/apiConfig";
-
-function getKey(): string {
-  const key = process.env.FLASHPROXY_API_KEY;
-  if (!key) throw new Error("FLASHPROXY_API_KEY is not set");
-  return key;
-}
 
 interface RequestOptions {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -20,7 +14,11 @@ interface RequestOptions {
   revalidate?: number | false;
 }
 
-export async function flashproxyFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
+export async function flashproxyFetch<T>(
+  apiKey: string,
+  path: string,
+  options: RequestOptions = {},
+): Promise<T> {
   const { method = "GET", body, idempotencyKey, searchParams, revalidate } = options;
 
   const url = new URL(`${apiConfig.baseUrl}${path}`);
@@ -31,12 +29,12 @@ export async function flashproxyFetch<T>(path: string, options: RequestOptions =
   }
 
   const headers: Record<string, string> = {
-    Authorization: `Bearer ${getKey()}`,
+    Authorization: `Bearer ${apiKey}`,
     "Content-Type": "application/json",
   };
   if (idempotencyKey) headers["X-Idempotency-Key"] = idempotencyKey;
 
-  const fetchOptions: RequestInit = {
+  const res = await fetch(url.toString(), {
     method,
     headers,
     ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
@@ -46,9 +44,8 @@ export async function flashproxyFetch<T>(path: string, options: RequestOptions =
         : revalidate !== undefined
           ? { revalidate }
           : { revalidate: 60 },
-  };
+  });
 
-  const res = await fetch(url.toString(), fetchOptions);
   const json = await res.json();
 
   if (!res.ok || json.success === false) {
