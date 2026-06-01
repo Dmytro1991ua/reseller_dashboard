@@ -1,0 +1,8 @@
+npm run format
+if ! git diff --quiet; then
+  echo ""
+  echo "Prettier reformatted files that were not staged."
+  echo "Please commit the formatting changes before pushing:"
+  git diff --name-only
+  exit 1
+fi

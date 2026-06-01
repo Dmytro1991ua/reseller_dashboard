@@ -19,17 +19,11 @@ export const metadata: Metadata = {
   description: "Reseller management dashboard for FlashProxy",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="min-h-screen bg-background font-sans antialiased">
-        <TooltipProvider delay={300}>
-          {children}
-        </TooltipProvider>
+      <body className="bg-background min-h-screen font-sans antialiased">
+        <TooltipProvider delay={300}>{children}</TooltipProvider>
         <Toaster richColors position="top-right" />
       </body>
     </html>

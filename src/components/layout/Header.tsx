@@ -48,9 +48,7 @@ export function Header() {
               <React.Fragment key={crumb.label}>
                 <BreadcrumbItem>
                   {!isLast && crumb.href ? (
-                    <BreadcrumbLink href={crumb.href}>
-                      {crumb.label}
-                    </BreadcrumbLink>
+                    <BreadcrumbLink href={crumb.href}>{crumb.label}</BreadcrumbLink>
                   ) : (
                     <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
                   )}

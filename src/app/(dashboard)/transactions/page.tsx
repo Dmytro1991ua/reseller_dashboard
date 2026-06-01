@@ -9,7 +9,7 @@ export default function TransactionsPage() {
     <>
       <div className="flex items-center gap-3">
         <Skeleton className="h-9 w-36" />
-        <Skeleton className="h-9 w-28 ml-auto" />
+        <Skeleton className="ml-auto h-9 w-28" />
       </div>
 
       <Card>
@@ -18,7 +18,7 @@ export default function TransactionsPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            <div className="flex gap-4 pb-2 border-b">
+            <div className="flex gap-4 border-b pb-2">
               {[120, 100, 80, 100, 80].map((w, i) => (
                 <Skeleton key={i} className={`h-4 w-[${w}px]`} />
               ))}
@@ -29,7 +29,7 @@ export default function TransactionsPage() {
                 <Skeleton className="h-4 w-48 flex-1" />
                 <Skeleton className="h-4 w-20" />
                 <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-4 w-28 ml-auto" />
+                <Skeleton className="ml-auto h-4 w-28" />
               </div>
             ))}
           </div>

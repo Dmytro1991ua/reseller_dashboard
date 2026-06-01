@@ -31,7 +31,7 @@ export default function SettingsPage() {
         <CardContent className="space-y-2">
           <Skeleton className="h-4 w-48" />
           <Skeleton className="h-4 w-36" />
-          <Skeleton className="h-9 w-24 mt-3" />
+          <Skeleton className="mt-3 h-9 w-24" />
         </CardContent>
       </Card>
     </div>

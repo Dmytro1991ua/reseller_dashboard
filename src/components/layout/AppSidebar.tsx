@@ -1,15 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Layers,
-  Receipt,
-  Settings,
-  LogOut,
-  Zap,
-} from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { LayoutDashboard, Layers, Receipt, Settings, LogOut, Zap } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -36,6 +29,13 @@ function isNavActive(pathname: string, href: string, exact: boolean) {
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/login");
+    router.refresh();
+  }
 
   return (
     <Sidebar collapsible="icon" variant="sidebar">
@@ -44,14 +44,12 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" render={<Link href="/" />}>
-              <div className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <div className="bg-primary text-primary-foreground flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg">
                 <Zap className="size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
                 <span className="font-semibold tracking-tight">FlashProxy</span>
-                <span className="text-[11px] text-muted-foreground">
-                  Reseller Dashboard
-                </span>
+                <span className="text-muted-foreground text-[11px]">Reseller Dashboard</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -99,9 +97,7 @@ export function AppSidebar() {
             <SidebarMenuButton
               tooltip="Log out"
               className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-              onClick={() => {
-                /* wired in auth step */
-              }}
+              onClick={handleLogout}
             >
               <LogOut />
               <span>Log out</span>
