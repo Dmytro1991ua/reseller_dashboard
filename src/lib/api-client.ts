@@ -4,7 +4,7 @@
  * Call this from Server Components, Route Handlers, or Server Actions only.
  */
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
+import { apiConfig } from "@/lib/apiConfig";
 
 function getKey(): string {
   const key = process.env.FLASHPROXY_API_KEY;
@@ -20,19 +20,10 @@ interface RequestOptions {
   revalidate?: number | false;
 }
 
-export async function flashproxyFetch<T>(
-  path: string,
-  options: RequestOptions = {},
-): Promise<T> {
-  const {
-    method = "GET",
-    body,
-    idempotencyKey,
-    searchParams,
-    revalidate,
-  } = options;
+export async function flashproxyFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const { method = "GET", body, idempotencyKey, searchParams, revalidate } = options;
 
-  const url = new URL(`${BASE_URL}${path}`);
+  const url = new URL(`${apiConfig.baseUrl}${path}`);
   if (searchParams) {
     Object.entries(searchParams).forEach(([k, v]) => {
       if (v !== undefined) url.searchParams.set(k, String(v));

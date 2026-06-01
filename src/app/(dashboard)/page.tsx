@@ -15,7 +15,7 @@ export default function OverviewPage() {
               <Skeleton className="h-4 w-24" />
             </CardHeader>
             <CardContent>
-              <Skeleton className="h-8 w-32 mb-1" />
+              <Skeleton className="mb-1 h-8 w-32" />
               <Skeleton className="h-3 w-20" />
             </CardContent>
           </Card>

@@ -31,14 +31,22 @@ export default function PlanDetailPage() {
           <div className="grid gap-4 sm:grid-cols-3">
             {Array.from({ length: 3 }).map((_, i) => (
               <Card key={i}>
-                <CardHeader className="pb-2"><Skeleton className="h-4 w-20" /></CardHeader>
-                <CardContent><Skeleton className="h-7 w-28" /></CardContent>
+                <CardHeader className="pb-2">
+                  <Skeleton className="h-4 w-20" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-7 w-28" />
+                </CardContent>
               </Card>
             ))}
           </div>
           <Card>
-            <CardHeader><Skeleton className="h-5 w-32" /></CardHeader>
-            <CardContent><Skeleton className="h-24 w-full rounded-md" /></CardContent>
+            <CardHeader>
+              <Skeleton className="h-5 w-32" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-24 w-full rounded-md" />
+            </CardContent>
           </Card>
         </TabsContent>
       </Tabs>

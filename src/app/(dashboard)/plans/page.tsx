@@ -9,10 +9,10 @@ export default function PlansPage() {
     <>
       {/* Toolbar */}
       <div className="flex items-center gap-3">
-        <Skeleton className="h-9 flex-1 max-w-xs" />
+        <Skeleton className="h-9 max-w-xs flex-1" />
         <Skeleton className="h-9 w-28" />
         <Skeleton className="h-9 w-28" />
-        <Skeleton className="h-9 w-32 ml-auto" />
+        <Skeleton className="ml-auto h-9 w-32" />
       </div>
 
       {/* Table */}
@@ -23,7 +23,7 @@ export default function PlansPage() {
         <CardContent>
           <div className="space-y-3">
             {/* Header row */}
-            <div className="flex gap-4 pb-2 border-b">
+            <div className="flex gap-4 border-b pb-2">
               {[140, 100, 80, 80, 90, 60].map((w, i) => (
                 <Skeleton key={i} className={`h-4 w-[${w}px]`} />
               ))}
@@ -36,7 +36,7 @@ export default function PlansPage() {
                 <Skeleton className="h-6 w-20 rounded-full" />
                 <Skeleton className="h-4 w-20" />
                 <Skeleton className="h-3 w-22" />
-                <Skeleton className="h-8 w-8 rounded ml-auto" />
+                <Skeleton className="ml-auto h-8 w-8 rounded" />
               </div>
             ))}
           </div>
