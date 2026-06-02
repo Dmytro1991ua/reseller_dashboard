@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { flashproxyFetch } from "@/lib/api-client";
 import { getSession } from "@/lib/session";
+import { MOCK_PLANS } from "@/lib/mock-data";
 import type {
   Balance,
   PlansListData,
@@ -105,8 +106,15 @@ export default async function OverviewPage() {
   ]);
 
   const balance = balanceResult.status === "fulfilled" ? balanceResult.value : null;
-  const plansData = plansResult.status === "fulfilled" ? plansResult.value : null;
   const txData = txResult.status === "fulfilled" ? txResult.value : null;
+
+  const apiPlans = plansResult.status === "fulfilled" ? (plansResult.value?.plans ?? []) : [];
+  const apiPlanTotal =
+    plansResult.status === "fulfilled" ? (plansResult.value?.pagination.total ?? 0) : 0;
+  const isDev = process.env.NODE_ENV === "development";
+  const usingMockPlans = isDev && apiPlans.length === 0;
+  const overviewPlans = usingMockPlans ? MOCK_PLANS.slice(0, 5) : apiPlans;
+  const planTotal = usingMockPlans ? MOCK_PLANS.length : apiPlanTotal;
 
   return (
     <>
@@ -122,11 +130,7 @@ export default async function OverviewPage() {
           value={balance ? formatUSD(balance.total_spent_cents) : "—"}
           subtitle="All time"
         />
-        <StatCard
-          title="Total Plans"
-          value={plansData ? String(plansData.pagination.total) : "—"}
-          subtitle="All statuses"
-        />
+        <StatCard title="Total Plans" value={String(planTotal)} subtitle="All statuses" />
         <StatCard
           title="Transactions"
           value={txData ? String(txData.pagination.total) : "—"}
@@ -135,9 +139,9 @@ export default async function OverviewPage() {
       </div>
 
       {/* ── Plans preview + recent transactions ─────────────────────────── */}
-      <div className="grid gap-4 lg:grid-cols-7">
+      <div className="grid gap-4 lg:grid-cols-2">
         {/* Recent plans */}
-        <Card className="lg:col-span-4">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base">Recent Plans</CardTitle>
             <Link
@@ -148,29 +152,29 @@ export default async function OverviewPage() {
             </Link>
           </CardHeader>
           <CardContent>
-            {plansData && plansData.plans.length > 0 ? (
+            {overviewPlans.length > 0 ? (
               <div className="space-y-1">
-                {plansData.plans.map((plan) => (
+                {overviewPlans.map((plan) => (
                   <Link
                     key={plan.plan_id}
                     href={`/plans/${plan.plan_id}`}
-                    className="hover:bg-muted/50 -mx-2 flex items-center gap-3 rounded-md px-2 py-2 transition-colors"
+                    className="hover:bg-muted/50 -mx-2 grid grid-cols-[auto_1fr_auto_auto] items-center gap-x-3 rounded-md px-2 py-2 transition-colors"
                   >
                     <span
                       className={cn(
-                        "inline-flex shrink-0 rounded px-1.5 py-0.5 text-xs font-medium capitalize",
+                        "inline-flex rounded px-1.5 py-0.5 text-xs font-medium capitalize",
                         STATUS_CLASS[plan.status],
                       )}
                     >
                       {plan.status}
                     </span>
-                    <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                    <span className="truncate text-sm font-medium">
                       {PRODUCT_LABELS[plan.product] ?? plan.product}
                     </span>
-                    <span className="text-muted-foreground shrink-0 font-mono text-xs">
+                    <span className="text-muted-foreground font-mono text-xs">
                       {plan.plan_id.slice(0, 8)}
                     </span>
-                    <span className="text-muted-foreground shrink-0 text-xs">
+                    <span className="text-muted-foreground text-right text-xs">
                       {plan.expires_at ? formatDate(plan.expires_at) : "No expiry"}
                     </span>
                   </Link>
@@ -183,7 +187,7 @@ export default async function OverviewPage() {
         </Card>
 
         {/* Recent transactions */}
-        <Card className="lg:col-span-3">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base">Recent Transactions</CardTitle>
             <Link
@@ -197,20 +201,20 @@ export default async function OverviewPage() {
             {txData && txData.transactions.length > 0 ? (
               <div className="space-y-3">
                 {txData.transactions.map((tx) => (
-                  <div key={tx.id} className="flex items-start gap-3">
+                  <div key={tx.id} className="grid grid-cols-[auto_1fr_auto] items-start gap-3">
                     <Badge
                       variant={tx.amount_cents > 0 ? "default" : "secondary"}
-                      className="mt-0.5 shrink-0"
+                      className="mt-0.5 min-w-18 justify-center"
                     >
                       {TX_LABELS[tx.type]}
                     </Badge>
-                    <div className="min-w-0 flex-1">
+                    <div className="min-w-0">
                       <p className="truncate text-sm">{tx.description}</p>
                       <p className="text-muted-foreground text-xs">{relativeTime(tx.created_at)}</p>
                     </div>
                     <span
                       className={cn(
-                        "shrink-0 text-sm font-medium tabular-nums",
+                        "text-right text-sm font-medium tabular-nums",
                         tx.amount_cents > 0 ? "text-green-600 dark:text-green-400" : "",
                       )}
                     >

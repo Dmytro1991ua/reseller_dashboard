@@ -11,7 +11,7 @@ const eslintConfig = defineConfig([
     rules: {
       // correctness
       "no-debugger": "error",
-      eqeqeq: ["error", "always"],
+      eqeqeq: ["error", "smart"],
       "no-var": "error",
       "prefer-const": "error",
 
