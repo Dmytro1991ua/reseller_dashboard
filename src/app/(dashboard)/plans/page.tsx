@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Plus } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import { flashproxyFetch } from "@/lib/api-client";
 import { getSession } from "@/lib/session";
 import type { PlansListData, PlanStatus } from "@/types/api";
@@ -106,7 +107,7 @@ export default async function PlansPage({
     revalidate: 60,
   }).catch(() => null);
 
-  const apiPlans = data?.plans ?? [];
+  const apiPlans = data?.items ?? [];
   const isDev = process.env.NODE_ENV === "development";
   const usingMocks = isDev && apiPlans.length === 0 && !search && !status;
   const plans = usingMocks ? MOCK_PLANS : apiPlans;
@@ -124,7 +125,13 @@ export default async function PlansPage({
 
   return (
     <>
-      <PlansToolbar />
+      <div className="flex items-center justify-between gap-3">
+        <PlansToolbar />
+        <Link href="/plans/new" className={buttonVariants({ size: "sm" })}>
+          <Plus className="size-4" />
+          New Plan
+        </Link>
+      </div>
 
       {usingMocks && (
         <div className="rounded-md border border-yellow-200 bg-yellow-50 px-4 py-2 text-sm text-yellow-800 dark:border-yellow-800/40 dark:bg-yellow-900/20 dark:text-yellow-400">

@@ -134,7 +134,7 @@ export default async function OverviewPage() {
   const balance = balanceResult.status === "fulfilled" ? balanceResult.value : null;
   const txData = txResult.status === "fulfilled" ? txResult.value : null;
 
-  const apiPlans = plansResult.status === "fulfilled" ? (plansResult.value?.plans ?? []) : [];
+  const apiPlans = plansResult.status === "fulfilled" ? (plansResult.value?.items ?? []) : [];
   const apiPlanTotal =
     plansResult.status === "fulfilled" ? (plansResult.value?.pagination.total ?? 0) : 0;
   const isDev = process.env.NODE_ENV === "development";
@@ -235,9 +235,9 @@ export default async function OverviewPage() {
             </Link>
           </CardHeader>
           <CardContent>
-            {txData && txData.transactions.length > 0 ? (
+            {txData && txData?.items?.length > 0 ? (
               <div className="space-y-3">
-                {txData.transactions.map((tx) => (
+                {txData.items.map((tx) => (
                   <div key={tx.id} className="grid grid-cols-[auto_1fr_auto] items-start gap-3">
                     <Badge
                       variant={tx.amount_cents > 0 ? "default" : "secondary"}
