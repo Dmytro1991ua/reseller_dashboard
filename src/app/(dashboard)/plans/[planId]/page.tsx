@@ -8,6 +8,7 @@ import { getMockPlan, getMockMetrics } from "@/lib/mock-data";
 import type { Plan, PlanStatus, MetricsSummary } from "@/types/api";
 import { PlanCredentials } from "@/features/plans/components/PlanCredentials";
 import { PlanActions } from "@/features/plans/components/PlanActions";
+import { PlanProxyDownload } from "@/features/plans/components/PlanProxyDownload";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -306,8 +307,9 @@ export default async function PlanDetailPage({
         </TabsContent>
 
         {/* ── Credentials ──────────────────────────────────────────────── */}
-        <TabsContent value="credentials" className="mt-4">
+        <TabsContent value="credentials" className="mt-4 space-y-4">
           <PlanCredentials plan={plan} />
+          <PlanProxyDownload plan={plan} />
         </TabsContent>
 
         {/* ── Metrics ──────────────────────────────────────────────────── */}
