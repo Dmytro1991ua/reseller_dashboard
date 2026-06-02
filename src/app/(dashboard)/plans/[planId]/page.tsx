@@ -4,12 +4,12 @@ import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { flashproxyFetch } from "@/lib/api-client";
 import { getSession } from "@/lib/session";
-import { getMockPlan, getMockMetrics } from "@/lib/mock-data";
 import type { Plan, PlanStatus, MetricsSummary } from "@/types/api";
 import { PlanCredentials } from "@/features/plans/components/PlanCredentials";
 import { PlanActions } from "@/features/plans/components/PlanActions";
 import { PlanProxyDownload } from "@/features/plans/components/PlanProxyDownload";
 import { PlanMetricsCharts } from "@/features/plans/components/PlanMetricsCharts";
+import { PlanInvestigation } from "@/features/plans/components/PlanInvestigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -114,24 +114,14 @@ function StatCard({
 // ─── data helpers ────────────────────────────────────────────────────────────
 
 async function fetchPlan(apiKey: string, planId: string): Promise<Plan | null> {
-  try {
-    return await flashproxyFetch<Plan>(apiKey, `/plans/${planId}`, { revalidate: 60 });
-  } catch {
-    if (process.env.NODE_ENV === "development") return getMockPlan(planId) ?? null;
-    return null;
-  }
+  return flashproxyFetch<Plan>(apiKey, `/plans/${planId}`, { revalidate: 60 }).catch(() => null);
 }
 
 async function fetchMetrics(apiKey: string, planId: string): Promise<MetricsSummary | null> {
-  try {
-    return await flashproxyFetch<MetricsSummary>(apiKey, `/plans/${planId}/metrics/summary`, {
-      searchParams: { hours: 24 },
-      revalidate: 300,
-    });
-  } catch {
-    if (process.env.NODE_ENV === "development") return getMockMetrics(planId) ?? null;
-    return null;
-  }
+  return flashproxyFetch<MetricsSummary>(apiKey, `/plans/${planId}/metrics/summary`, {
+    searchParams: { hours: 24 },
+    revalidate: 300,
+  }).catch(() => null);
 }
 
 // ─── metrics tab ──────────────────────────────────────────────────────────────
@@ -317,6 +307,7 @@ export default async function PlanDetailPage({
         <TabsContent value="metrics" className="mt-4 space-y-4">
           <MetricsTabContent hasMetrics={hasMetrics} metrics={metrics} />
           {hasMetrics && <PlanMetricsCharts planId={planId} />}
+          {hasMetrics && <PlanInvestigation planId={planId} />}
         </TabsContent>
       </Tabs>
     </>

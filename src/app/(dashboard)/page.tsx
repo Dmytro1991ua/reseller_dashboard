@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { flashproxyFetch } from "@/lib/api-client";
 import { getSession } from "@/lib/session";
-import { MOCK_PLANS, MOCK_USAGE } from "@/lib/mock-data";
 import type {
   Balance,
   PlansListData,
@@ -133,21 +132,10 @@ export default async function OverviewPage() {
 
   const balance = balanceResult.status === "fulfilled" ? balanceResult.value : null;
   const txData = txResult.status === "fulfilled" ? txResult.value : null;
-
-  const apiPlans = plansResult.status === "fulfilled" ? (plansResult.value?.items ?? []) : [];
-  const apiPlanTotal =
+  const overviewPlans = plansResult.status === "fulfilled" ? (plansResult.value?.plans ?? []) : [];
+  const planTotal =
     plansResult.status === "fulfilled" ? (plansResult.value?.pagination.total ?? 0) : 0;
-  const isDev = process.env.NODE_ENV === "development";
-  const usingMockPlans = isDev && apiPlans.length === 0;
-  const overviewPlans = usingMockPlans ? MOCK_PLANS.slice(0, 5) : apiPlans;
-  const planTotal = usingMockPlans ? MOCK_PLANS.length : apiPlanTotal;
-
-  // Fall back to mock usage in dev when the API returns nothing — same pattern as plans
-  const apiUsage = usageResult.status === "fulfilled" ? usageResult.value : null;
-  const usingMockUsage = isDev && !apiUsage?.daily_breakdown?.length;
-  const usage = usingMockUsage ? MOCK_USAGE : apiUsage;
-
-  // Pre-format chart points server-side — converts bytes → GB and formats date labels
+  const usage = usageResult.status === "fulfilled" ? usageResult.value : null;
   const usagePoints = buildUsagePoints(usage);
 
   return (
@@ -156,12 +144,12 @@ export default async function OverviewPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Balance"
-          value={balance ? formatUSD(balance.balance_cents) : "—"}
+          value={balance?.balance_formatted ?? "—"}
           subtitle="Available credit"
         />
         <StatCard
           title="Total Spent"
-          value={balance ? formatUSD(balance.total_spent_cents) : "—"}
+          value={balance?.total_spent_formatted ?? "—"}
           subtitle="All time"
         />
         <StatCard title="Total Plans" value={String(planTotal)} subtitle="All statuses" />
@@ -235,9 +223,9 @@ export default async function OverviewPage() {
             </Link>
           </CardHeader>
           <CardContent>
-            {txData && txData?.items?.length > 0 ? (
+            {txData && txData?.transactions?.length > 0 ? (
               <div className="space-y-3">
-                {txData.items.map((tx) => (
+                {txData.transactions.map((tx) => (
                   <div key={tx.id} className="grid grid-cols-[auto_1fr_auto] items-start gap-3">
                     <Badge
                       variant={tx.amount_cents > 0 ? "default" : "secondary"}
