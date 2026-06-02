@@ -8,9 +8,12 @@ datasource db {
 
 model AuditEvent {
   id         String   @id @default(cuid())
-  action     String   // "login" | "logout"
+  action     String   // "login" | "logout" | "api_call"
   apiKeyHash String   // SHA-256 of the key — identifies reseller without storing plaintext
   ip         String?
+  method     String?  // HTTP method — set for api_call events (POST, PUT, DELETE, PATCH)
+  path       String?  // FlashProxy API path — set for api_call events
+  statusCode Int?     // Upstream HTTP status — set for api_call events
   createdAt  DateTime @default(now())
 
   @@index([apiKeyHash])
