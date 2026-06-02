@@ -25,7 +25,7 @@ const TYPE_OPTIONS = [
   { value: "admin_adjustment", label: "Admin adjustment" },
 ];
 
-export function TransactionsToolbar({ total }: Readonly<{ total: number }>) {
+export function TransactionsToolbar() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -53,10 +53,6 @@ export function TransactionsToolbar({ total }: Readonly<{ total: number }>) {
           ))}
         </SelectContent>
       </Select>
-
-      <span className="text-muted-foreground ml-auto text-sm tabular-nums">
-        {total} transaction{total === 1 ? "" : "s"}
-      </span>
     </div>
   );
 }
