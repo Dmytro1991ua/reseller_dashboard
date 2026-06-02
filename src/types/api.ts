@@ -359,11 +359,10 @@ export interface ErrorMessagesData {
 // ─── Usage ─────────────────────────────────────────────────────────────────
 
 export interface UsageSummary {
-  period: string;
-  total_bytes_used: number;
-  total_bytes_formatted: string;
-  by_product: Record<string, { bytes_used: number; bytes_formatted: string; plans_count: number }>;
-  daily_breakdown: { date: string; bytes_used: number }[];
+  time_range: { start: number; end: number; period: string };
+  summary: { total_bytes: number; total_gb: number; total_requests: number; active_plans: number };
+  by_product: Record<string, { bytes: number; plans: number }>;
+  daily_breakdown: { date: string; bytes: number; gb: number }[];
 }
 
 // ─── Investigations ────────────────────────────────────────────────────────
