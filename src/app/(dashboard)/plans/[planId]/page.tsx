@@ -7,6 +7,7 @@ import { getSession } from "@/lib/session";
 import { getMockPlan, getMockMetrics } from "@/lib/mock-data";
 import type { Plan, PlanStatus, MetricsSummary } from "@/types/api";
 import { PlanCredentials } from "@/features/plans/components/PlanCredentials";
+import { PlanActions } from "@/features/plans/components/PlanActions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -233,6 +234,7 @@ export default async function PlanDetailPage({
             </div>
             <p className="text-muted-foreground font-mono text-sm">{plan.plan_id}</p>
           </div>
+          <PlanActions plan={plan} />
         </div>
       </div>
 
