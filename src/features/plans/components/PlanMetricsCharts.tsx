@@ -13,7 +13,6 @@ import {
 } from "recharts";
 import { Loader2 } from "lucide-react";
 import type { LatencyData, ThroughputData } from "@/types/api";
-import { MOCK_LATENCY, MOCK_THROUGHPUT } from "@/lib/mock-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const HOURS = 24;
@@ -205,16 +204,11 @@ export function PlanMetricsCharts({ planId }: Readonly<{ planId: string }>) {
   });
 
   useEffect(() => {
-    const isDev = process.env.NODE_ENV === "development";
     Promise.all([
       fetchMetric<ThroughputData>(planId, "throughput"),
       fetchMetric<LatencyData>(planId, "latency"),
     ]).then(([throughput, latency]) => {
-      setState({
-        throughput: throughput ?? (isDev ? MOCK_THROUGHPUT : null),
-        latency: latency ?? (isDev ? MOCK_LATENCY : null),
-        loading: false,
-      });
+      setState({ throughput, latency, loading: false });
     });
   }, [planId]);
 

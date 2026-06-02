@@ -5,7 +5,6 @@ import { buttonVariants } from "@/components/ui/button";
 import { flashproxyFetch } from "@/lib/api-client";
 import { getSession } from "@/lib/session";
 import type { PlansListData, PlanStatus } from "@/types/api";
-import { MOCK_PLANS } from "@/lib/mock-data";
 import { PlansToolbar } from "@/features/plans/components/PlansToolbar";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -107,14 +106,11 @@ export default async function PlansPage({
     revalidate: 60,
   }).catch(() => null);
 
-  const apiPlans = data?.items ?? [];
-  const isDev = process.env.NODE_ENV === "development";
-  const usingMocks = isDev && apiPlans.length === 0 && !search && !status;
-  const plans = usingMocks ? MOCK_PLANS : apiPlans;
+  const plans = data?.plans ?? [];
 
   const pagination = data?.pagination;
-  const totalPages = usingMocks ? 1 : (pagination?.total_pages ?? 1);
-  const total = usingMocks ? MOCK_PLANS.length : (pagination?.total ?? 0);
+  const totalPages = pagination?.total_pages ?? 1;
+  const total = pagination?.total ?? 0;
   const hasPrev = page > 1;
   const hasNext = page < totalPages;
 
@@ -132,12 +128,6 @@ export default async function PlansPage({
           New Plan
         </Link>
       </div>
-
-      {usingMocks && (
-        <div className="rounded-md border border-yellow-200 bg-yellow-50 px-4 py-2 text-sm text-yellow-800 dark:border-yellow-800/40 dark:bg-yellow-900/20 dark:text-yellow-400">
-          Dev mode — showing mock plans. Real data will appear once plans are created.
-        </div>
-      )}
 
       <Card>
         <CardContent className="p-0">
