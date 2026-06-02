@@ -100,7 +100,7 @@ export default async function TransactionsPage({
 
   return (
     <>
-      <TransactionsToolbar total={total} />
+      <TransactionsToolbar />
 
       <Card>
         <CardContent className="p-0">
