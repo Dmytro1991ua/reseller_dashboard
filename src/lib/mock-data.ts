@@ -1,4 +1,4 @@
-import type { Plan } from "@/types/api";
+import type { Plan, MetricsSummary } from "@/types/api";
 
 export const MOCK_PLANS: Plan[] = [
   {
@@ -117,4 +117,25 @@ export const MOCK_PLANS: Plan[] = [
 
 export function getMockPlan(planId: string): Plan | undefined {
   return MOCK_PLANS.find((p) => p.plan_id === planId);
+}
+
+// Mock metrics — only for plan types that support it (datacenter, shared_isp, ipv6-*)
+const MOCK_METRICS: Record<string, MetricsSummary> = {
+  // datacenter plan
+  "f8a3c2e1-7b45-4d92-a1f6-3e8d5c9b0a12": {
+    hours: 24,
+    total_bytes: 4_200_000_000,
+    total_mb: 4200,
+    total_connections: 12543,
+    total_successes: 12389,
+    total_errors: 154,
+    success_rate_pct: 98.77,
+    peak_concurrent: 67,
+    avg_mbps: 3.24,
+    peak_mbps: 24.8,
+  },
+};
+
+export function getMockMetrics(planId: string): MetricsSummary | undefined {
+  return MOCK_METRICS[planId];
 }
