@@ -1,4 +1,4 @@
-import type { Plan, MetricsSummary, UsageSummary } from "@/types/api";
+import type { Plan, MetricsSummary, UsageSummary, ThroughputData, LatencyData } from "@/types/api";
 
 export const MOCK_PLANS: Plan[] = [
   {
@@ -164,4 +164,32 @@ export const MOCK_USAGE: UsageSummary = {
       gb: Number.parseFloat((bytes / 1_000_000_000).toFixed(2)),
     };
   }),
+};
+
+// 24 hourly buckets of mock throughput + latency for the Datacenter plan metrics charts
+const MOCK_BUCKETS = Array.from({ length: 24 }, (_, i) => {
+  const d = new Date("2026-06-02T00:00:00.000Z");
+  d.setUTCHours(i);
+  return d.toISOString();
+});
+
+export const MOCK_THROUGHPUT: ThroughputData = {
+  hours: 24,
+  bucket_minutes: 60,
+  series: MOCK_BUCKETS.map((bucket, i) => ({
+    bucket,
+    mbps: Number.parseFloat((10 + ((i * 17 + 3) % 70)).toFixed(1)),
+    rate_cap_mbps: 100,
+  })),
+};
+
+export const MOCK_LATENCY: LatencyData = {
+  hours: 24,
+  bucket_minutes: 60,
+  series: MOCK_BUCKETS.map((bucket, i) => ({
+    bucket,
+    p50: 20 + ((i * 7 + 5) % 20),
+    p95: 55 + ((i * 11 + 3) % 35),
+    p99: 110 + ((i * 13 + 7) % 70),
+  })),
 };
