@@ -1,0 +1,120 @@
+import type { Plan } from "@/types/api";
+
+export const MOCK_PLANS: Plan[] = [
+  {
+    plan_id: "3cd1f4b9-efc3-4252-b9f7-9cebc5236164",
+    product: "residential-lite",
+    billing_type: "bandwidth",
+    proxy_username: "xaGBMTIV",
+    proxy_password: "HoLJlh55",
+    connection: {
+      hostname: "lite.proxyserver.bot",
+      port_http: 6969,
+      port_socks: 9696,
+      format: "xaGBMTIV:HoLJlh55@lite.proxyserver.bot:6969",
+    },
+    limits: {
+      max_gb: 10,
+      max_bytes: 10_000_000_000,
+      bytes_used: 2_500_000_000,
+    },
+    status: "active",
+    expires_at: "2026-08-15T00:00:00.000Z",
+    created_at: "2026-06-01T10:00:00.000Z",
+    purchase_price_cents: 1250,
+  },
+  {
+    plan_id: "0e1769e9-8bee-48df-8d2c-4a5dd9a2591e",
+    product: "dedicated_isp",
+    billing_type: "time",
+    proxy_username: "dISP_user",
+    proxy_password: "SecurePass99",
+    connection: {
+      hostname: "isp.proxyserver.bot",
+      port_http: 7070,
+      port_socks: 7071,
+      format: "dISP_user:SecurePass99@isp.proxyserver.bot:7070",
+    },
+    limits: {
+      max_gb: null,
+      max_bytes: null,
+      bytes_used: 0,
+    },
+    status: "active",
+    expires_at: "2026-09-01T00:00:00.000Z",
+    created_at: "2026-06-01T12:00:00.000Z",
+    purchase_price_cents: 10000,
+    allowed_ips: ["192.168.1.1", "10.0.0.5"],
+  },
+  {
+    plan_id: "ca2dc1f7-8d76-438f-b265-bf9fce9b183a",
+    product: "residential",
+    billing_type: "bandwidth",
+    proxy_username: "resUser42",
+    proxy_password: "P@ssw0rd!",
+    connection: {
+      hostname: "res.proxyserver.bot",
+      port_http: 5050,
+      port_socks: 5051,
+      format: "resUser42:P@ssw0rd!@res.proxyserver.bot:5050",
+    },
+    limits: {
+      max_gb: 5,
+      max_bytes: 5_000_000_000,
+      bytes_used: 5_000_000_000,
+    },
+    status: "expired",
+    expires_at: "2026-05-01T00:00:00.000Z",
+    created_at: "2026-04-01T08:00:00.000Z",
+    purchase_price_cents: 750,
+  },
+  {
+    plan_id: "f8a3c2e1-7b45-4d92-a1f6-3e8d5c9b0a12",
+    product: "datacenter",
+    billing_type: "bandwidth",
+    proxy_username: "dcUser77",
+    proxy_password: "Dc@2024xx",
+    connection: {
+      hostname: "dc.proxyserver.bot",
+      port_http: 8080,
+      port_socks: 8081,
+      format: "dcUser77:Dc@2024xx@dc.proxyserver.bot:8080",
+    },
+    limits: {
+      max_gb: 20,
+      max_bytes: 20_000_000_000,
+      bytes_used: 4_200_000_000,
+    },
+    status: "active",
+    expires_at: "2026-07-30T00:00:00.000Z",
+    created_at: "2026-05-15T14:30:00.000Z",
+    purchase_price_cents: 2000,
+    location: "NL",
+  },
+  {
+    plan_id: "b1e4d8f2-3a67-4c89-b5e2-9f1a7d3c6e04",
+    product: "mobile",
+    billing_type: "bandwidth",
+    proxy_username: "mobUser11",
+    proxy_password: "Mob1le$$",
+    connection: {
+      hostname: "mob.proxyserver.bot",
+      port_http: 4040,
+      port_socks: null,
+      format: "mobUser11:Mob1le$$@mob.proxyserver.bot:4040",
+    },
+    limits: {
+      max_gb: 2,
+      max_bytes: 2_000_000_000,
+      bytes_used: 100_000_000,
+    },
+    status: "cancelled",
+    expires_at: null,
+    created_at: "2026-03-10T09:00:00.000Z",
+    purchase_price_cents: 500,
+  },
+];
+
+export function getMockPlan(planId: string): Plan | undefined {
+  return MOCK_PLANS.find((p) => p.plan_id === planId);
+}

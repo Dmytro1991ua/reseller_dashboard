@@ -63,12 +63,12 @@ const PRODUCT_LABELS: Record<string, string> = {
 
 const STATUS_CLASS: Record<PlanStatus, string> = {
   active: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  pending: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-  provisioning: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-  inactive: "bg-secondary text-secondary-foreground",
-  expired: "bg-secondary text-secondary-foreground",
-  cancelled: "bg-secondary text-secondary-foreground",
-  failed: "bg-destructive/10 text-destructive",
+  pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  provisioning: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  inactive: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400",
+  expired: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
+  cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  failed: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
 };
 
 const TX_LABELS: Record<Transaction["type"], string> = {
@@ -115,22 +115,22 @@ export default async function OverviewPage() {
         <StatCard
           title="Balance"
           value={balance ? formatUSD(balance.balance_cents) : "—"}
-          subtitle="available credit"
+          subtitle="Available credit"
         />
         <StatCard
           title="Total Spent"
           value={balance ? formatUSD(balance.total_spent_cents) : "—"}
-          subtitle="all time"
+          subtitle="All time"
         />
         <StatCard
           title="Total Plans"
           value={plansData ? String(plansData.pagination.total) : "—"}
-          subtitle="all statuses"
+          subtitle="All statuses"
         />
         <StatCard
           title="Transactions"
           value={txData ? String(txData.pagination.total) : "—"}
-          subtitle="all time"
+          subtitle="All time"
         />
       </div>
 
@@ -158,7 +158,7 @@ export default async function OverviewPage() {
                   >
                     <span
                       className={cn(
-                        "inline-flex shrink-0 rounded px-1.5 py-0.5 text-xs font-medium",
+                        "inline-flex shrink-0 rounded px-1.5 py-0.5 text-xs font-medium capitalize",
                         STATUS_CLASS[plan.status],
                       )}
                     >
