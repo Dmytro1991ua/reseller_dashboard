@@ -9,6 +9,7 @@ import { PlanCredentials } from "@/features/plans/components/PlanCredentials";
 import { PlanActions } from "@/features/plans/components/PlanActions";
 import { PlanProxyDownload } from "@/features/plans/components/PlanProxyDownload";
 import { PlanMetricsCharts } from "@/features/plans/components/PlanMetricsCharts";
+import { PlanInvestigation } from "@/features/plans/components/PlanInvestigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -306,6 +307,7 @@ export default async function PlanDetailPage({
         <TabsContent value="metrics" className="mt-4 space-y-4">
           <MetricsTabContent hasMetrics={hasMetrics} metrics={metrics} />
           {hasMetrics && <PlanMetricsCharts planId={planId} />}
+          {hasMetrics && <PlanInvestigation planId={planId} />}
         </TabsContent>
       </Tabs>
     </>
