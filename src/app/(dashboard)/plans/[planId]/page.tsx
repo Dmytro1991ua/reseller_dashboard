@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { flashproxyFetch } from "@/lib/api-client";
 import { getSession } from "@/lib/session";
-import { getMockPlan, getMockMetrics } from "@/lib/mock-data";
 import type { Plan, PlanStatus, MetricsSummary } from "@/types/api";
 import { PlanCredentials } from "@/features/plans/components/PlanCredentials";
 import { PlanActions } from "@/features/plans/components/PlanActions";
@@ -114,24 +113,14 @@ function StatCard({
 // ─── data helpers ────────────────────────────────────────────────────────────
 
 async function fetchPlan(apiKey: string, planId: string): Promise<Plan | null> {
-  try {
-    return await flashproxyFetch<Plan>(apiKey, `/plans/${planId}`, { revalidate: 60 });
-  } catch {
-    if (process.env.NODE_ENV === "development") return getMockPlan(planId) ?? null;
-    return null;
-  }
+  return flashproxyFetch<Plan>(apiKey, `/plans/${planId}`, { revalidate: 60 }).catch(() => null);
 }
 
 async function fetchMetrics(apiKey: string, planId: string): Promise<MetricsSummary | null> {
-  try {
-    return await flashproxyFetch<MetricsSummary>(apiKey, `/plans/${planId}/metrics/summary`, {
-      searchParams: { hours: 24 },
-      revalidate: 300,
-    });
-  } catch {
-    if (process.env.NODE_ENV === "development") return getMockMetrics(planId) ?? null;
-    return null;
-  }
+  return flashproxyFetch<MetricsSummary>(apiKey, `/plans/${planId}/metrics/summary`, {
+    searchParams: { hours: 24 },
+    revalidate: 300,
+  }).catch(() => null);
 }
 
 // ─── metrics tab ──────────────────────────────────────────────────────────────

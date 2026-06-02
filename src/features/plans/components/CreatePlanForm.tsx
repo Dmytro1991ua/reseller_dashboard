@@ -256,6 +256,12 @@ function pickExtras(values: FormValues): Partial<CreatePlanRequest> {
   return {};
 }
 
+function confirmLabel(confirming: boolean, priceData: CheckPriceResponse | null): string {
+  if (confirming) return "Creating…";
+  if (priceData) return `Confirm — charge ${priceData.cost_usd}`;
+  return "Confirm & create plan";
+}
+
 function buildRequestBody(values: FormValues): CreatePlanRequest {
   return {
     product: values.product,
@@ -387,11 +393,7 @@ function ReviewStep({
         </Button>
         <Button type="button" onClick={onConfirm} disabled={confirming}>
           {confirming && <Loader2 className="mr-1 size-4 animate-spin" />}
-          {confirming
-            ? "Creating…"
-            : priceData
-              ? `Confirm — charge ${priceData.cost_usd}`
-              : "Confirm & create plan"}
+          {confirmLabel(confirming, priceData)}
         </Button>
       </div>
     </div>
@@ -546,7 +548,6 @@ export function CreatePlanForm() {
     const plan = (raw.data ?? raw) as { plan_id: string };
     toast.success("Plan created successfully!");
     router.push(`/plans/${plan.plan_id}`);
-    router.refresh();
   }
 
   if (step === "review" && priceData) {
@@ -614,7 +615,7 @@ export function CreatePlanForm() {
           <Label>Bandwidth (GB)</Label>
           <div className="flex items-center gap-2">
             <Input
-              {...register("bandwidth_gb", { valueAsNumber: true, shouldUnregister: true })}
+              {...register("bandwidth_gb", { valueAsNumber: true })}
               type="number"
               min={1}
               step={1}
@@ -661,7 +662,7 @@ export function CreatePlanForm() {
           <Label>Speed (Mbps)</Label>
           <div className="flex items-center gap-2">
             <Input
-              {...register("mbps", { valueAsNumber: true, shouldUnregister: true })}
+              {...register("mbps", { valueAsNumber: true })}
               type="number"
               min={10}
               max={10000}
@@ -681,7 +682,7 @@ export function CreatePlanForm() {
           <Label>Bandwidth cap (Mbps)</Label>
           <div className="flex items-center gap-2">
             <Input
-              {...register("bandwidth_mbps", { valueAsNumber: true, shouldUnregister: true })}
+              {...register("bandwidth_mbps", { valueAsNumber: true })}
               type="number"
               min={200}
               max={3000}
@@ -703,7 +704,7 @@ export function CreatePlanForm() {
           <div className="space-y-2">
             <Label>Number of IPs</Label>
             <Input
-              {...register("quantity", { valueAsNumber: true, shouldUnregister: true })}
+              {...register("quantity", { valueAsNumber: true })}
               type="number"
               min={1}
               step={1}
