@@ -59,7 +59,7 @@ export interface Transaction {
 }
 
 export interface TransactionsData {
-  transactions: Transaction[];
+  items: Transaction[];
   pagination: Pagination;
 }
 
@@ -172,7 +172,7 @@ export interface Plan {
 }
 
 export interface PlansListData {
-  plans: Plan[];
+  items: Plan[];
   pagination: Pagination;
 }
 

@@ -24,6 +24,10 @@ function getCrumbs(pathname: string): Crumb[] {
   if (pathname === "/transactions") return [{ label: "Transactions" }];
   if (pathname === "/settings") return [{ label: "Settings" }];
 
+  if (pathname === "/plans/new") {
+    return [{ label: "Plans", href: "/plans" }, { label: "New Plan" }];
+  }
+
   if (/^\/plans\/.+/.test(pathname)) {
     return [{ label: "Plans", href: "/plans" }, { label: "Plan Details" }];
   }

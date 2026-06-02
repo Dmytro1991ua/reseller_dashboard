@@ -52,14 +52,14 @@ function ExtendDialog({ plan, open, onOpenChange }: Readonly<ExtendDialogProps>)
   // One idempotency key per dialog open session.
   // If the request fails (network error) and the user retries without closing,
   // the same key is reused so FlashProxy deduplicates and won't double-charge.
-  const idempotencyKeyRef = useRef<string | undefined>(undefined);
-  useEffect(() => {
-    if (open) idempotencyKeyRef.current = crypto.randomUUID();
-  }, [open]);
-
+  // dedicated_isp has billing_type "per_ip" and extends by exactly 30 days (no configurable amount)
+  // unlimited_residential is not extendable at all per API spec
+  const isDedicatedIsp = plan.billing_type === "per_ip";
   const isBandwidth = plan.billing_type === "bandwidth";
   // price_per_gb is in cents — present on bandwidth plans from the billing object
   const pricePerGbCents = plan.billing?.price_per_gb ?? null;
+
+  const idempotencyKeyRef = useRef<string | undefined>(undefined);
 
   const {
     register,
@@ -76,6 +76,14 @@ function ExtendDialog({ plan, open, onOpenChange }: Readonly<ExtendDialogProps>)
     mode: "onChange",
   });
 
+  // Generate a fresh idempotency key on each open.
+  // dedicated_isp always extends 30 days — pre-fill so the form passes validation.
+  useEffect(() => {
+    if (!open) return;
+    idempotencyKeyRef.current = crypto.randomUUID();
+    if (isDedicatedIsp) setValue("amount", 30, { shouldValidate: true });
+  }, [open, isDedicatedIsp, setValue]);
+
   // Live cost preview — valueAsNumber means watch() already returns a number (or NaN when empty)
   const amount = watch("amount");
   const estimatedCents =
@@ -89,14 +97,19 @@ function ExtendDialog({ plan, open, onOpenChange }: Readonly<ExtendDialogProps>)
   }
 
   async function onSubmit(data: ExtendFormData) {
-    // Build the body based on billing type — only one field is sent at a time
-    const body = isBandwidth ? { add_bandwidth_gb: data.amount } : { add_days: data.amount };
+    let body: Record<string, unknown>;
+    if (isDedicatedIsp) {
+      body = { extend_30_days: true };
+    } else if (isBandwidth) {
+      body = { add_bandwidth_gb: data.amount };
+    } else {
+      body = { add_days: data.amount };
+    }
 
     const res = await fetch(`/api/proxy/plans/${plan.plan_id}/extend`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // Forward the idempotency key so FlashProxy can detect retries
         ...(idempotencyKeyRef.current ? { "X-Idempotency-Key": idempotencyKeyRef.current } : {}),
       },
       body: JSON.stringify(body),
@@ -108,50 +121,69 @@ function ExtendDialog({ plan, open, onOpenChange }: Readonly<ExtendDialogProps>)
       return;
     }
 
-    toast.success(
-      isBandwidth ? `Added ${data.amount} GB to plan.` : `Extended plan by ${data.amount} days.`,
-    );
+    let successMsg: string;
+    if (isDedicatedIsp) {
+      successMsg = "Plan extended by 30 days.";
+    } else if (isBandwidth) {
+      successMsg = `Added ${data.amount} GB to plan.`;
+    } else {
+      successMsg = `Extended plan by ${data.amount} days.`;
+    }
+    toast.success(successMsg);
     onOpenChange(false);
     router.refresh();
   }
 
   const inputLabel = isBandwidth ? "GB to add" : "Days to add";
   const inputUnit = isBandwidth ? "GB" : "days";
-  const submitLabel =
-    estimatedCents !== null ? `Confirm — charge ${formatCents(estimatedCents)}` : "Extend plan";
+
+  let submitLabel = "Extend plan";
+  if (isDedicatedIsp) submitLabel = "Extend 30 days";
+  else if (estimatedCents !== null) submitLabel = `Confirm — charge ${formatCents(estimatedCents)}`;
+
+  let extendDescription =
+    "Extend this plan's active period. The cost will be charged from your balance.";
+  if (isDedicatedIsp)
+    extendDescription = `Extend all ${plan.quantity ?? ""} IPs for 30 days. The cost will be charged from your balance.`;
+  else if (isBandwidth)
+    extendDescription =
+      "Add more bandwidth to this plan. The cost will be charged from your balance.";
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Extend plan</DialogTitle>
-          <DialogDescription>
-            {isBandwidth
-              ? "Add more bandwidth to this plan. The cost will be charged from your balance."
-              : "Extend this plan's active period. The cost will be charged from your balance."}
-          </DialogDescription>
+          <DialogDescription>{extendDescription}</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-1">
-            <p className="text-sm font-medium">{inputLabel}</p>
-            <div className="flex items-center gap-2">
-              <Input
-                {...register("amount", { valueAsNumber: true })}
-                type="number"
-                min={1}
-                step={1}
-                placeholder={isBandwidth ? "e.g. 10" : "e.g. 30"}
-                className="w-36"
-                autoFocus
-              />
-              <span className="text-muted-foreground text-sm">{inputUnit}</span>
+          {/* dedicated_isp always extends 30 days — no amount input needed */}
+          {isDedicatedIsp ? (
+            <p className="text-muted-foreground text-sm">
+              Duration: <span className="text-foreground font-medium">30 days</span> (fixed)
+            </p>
+          ) : (
+            <div className="space-y-1">
+              <p className="text-sm font-medium">{inputLabel}</p>
+              <div className="flex items-center gap-2">
+                <Input
+                  {...register("amount", { valueAsNumber: true })}
+                  type="number"
+                  min={1}
+                  step={1}
+                  placeholder={isBandwidth ? "e.g. 10" : "e.g. 30"}
+                  className="w-36"
+                  autoFocus
+                />
+                <span className="text-muted-foreground text-sm">{inputUnit}</span>
+              </div>
+              {errors.amount && <p className="text-destructive text-xs">{errors.amount.message}</p>}
             </div>
-            {errors.amount && <p className="text-destructive text-xs">{errors.amount.message}</p>}
-          </div>
+          )}
 
-          {/* Quick shortcut for time plans — sets the field to 30 and triggers validation */}
-          {isBandwidth ? null : (
+          {/* Quick shortcut for time-billed plans */}
+          {!isBandwidth && !isDedicatedIsp && (
             <Button
               type="button"
               variant="outline"
@@ -301,7 +333,8 @@ export function PlanActions({ plan }: Readonly<{ plan: Plan }>) {
   const [extendOpen, setExtendOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
 
-  const canExtend = EXTENDABLE_STATUSES.has(plan.status);
+  const canExtend =
+    EXTENDABLE_STATUSES.has(plan.status) && plan.product !== "unlimited_residential";
   const canCancel = CANCELLABLE_STATUSES.has(plan.status);
 
   return (

@@ -90,7 +90,7 @@ export default async function TransactionsPage({
     revalidate: 30,
   }).catch(() => null);
 
-  const transactions = data?.transactions ?? [];
+  const transactions = data?.items ?? [];
   const pagination = data?.pagination;
   const total = pagination?.total ?? 0;
   const totalPages = pagination?.total_pages ?? 1;
