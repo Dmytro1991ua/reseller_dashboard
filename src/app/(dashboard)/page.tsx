@@ -2,15 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { flashproxyFetch } from "@/lib/api-client";
 import { getSession } from "@/lib/session";
-import { MOCK_PLANS } from "@/lib/mock-data";
+import { MOCK_PLANS, MOCK_USAGE } from "@/lib/mock-data";
 import type {
   Balance,
   PlansListData,
   TransactionsData,
+  UsageSummary,
   PlanStatus,
   Transaction,
 } from "@/types/api";
 import { StatCard } from "@/features/overview/components/StatCard";
+import { UsageChart } from "@/features/overview/components/UsageChart";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -87,13 +89,33 @@ const TX_LABELS: Record<Transaction["type"], string> = {
   admin_adjustment: "Adjustment",
 };
 
+// ─── helpers ─────────────────────────────────────────────────────────────────
+
+function buildUsagePoints(usage: UsageSummary | null) {
+  if (!usage) return [];
+
+  // API only returns days with actual data — fill the rest with 0 so the chart
+  // always shows a full 30-day window instead of a single dot
+  const byDate = new Map(usage.daily_breakdown.map((p) => [p.date, p.gb]));
+
+  return Array.from({ length: 30 }, (_, i) => {
+    const d = new Date();
+    d.setUTCDate(d.getUTCDate() - (29 - i));
+    const key = d.toISOString().slice(0, 10);
+    return {
+      date: new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(d),
+      gb: byDate.get(key) ?? 0,
+    };
+  });
+}
+
 // ─── page ─────────────────────────────────────────────────────────────────────
 
 export default async function OverviewPage() {
   const session = await getSession();
   const apiKey = session.apiKey ?? "";
 
-  const [balanceResult, plansResult, txResult] = await Promise.allSettled([
+  const [balanceResult, plansResult, txResult, usageResult] = await Promise.allSettled([
     flashproxyFetch<Balance>(apiKey, "/balance", { revalidate: 30 }),
     flashproxyFetch<PlansListData>(apiKey, "/plans", {
       searchParams: { per_page: 5, sort: "created_at", order: "desc" },
@@ -102,6 +124,10 @@ export default async function OverviewPage() {
     flashproxyFetch<TransactionsData>(apiKey, "/balance/transactions", {
       searchParams: { per_page: 5 },
       revalidate: 30,
+    }),
+    flashproxyFetch<UsageSummary>(apiKey, "/usage/summary", {
+      searchParams: { days: 30 },
+      revalidate: 300,
     }),
   ]);
 
@@ -115,6 +141,14 @@ export default async function OverviewPage() {
   const usingMockPlans = isDev && apiPlans.length === 0;
   const overviewPlans = usingMockPlans ? MOCK_PLANS.slice(0, 5) : apiPlans;
   const planTotal = usingMockPlans ? MOCK_PLANS.length : apiPlanTotal;
+
+  // Fall back to mock usage in dev when the API returns nothing — same pattern as plans
+  const apiUsage = usageResult.status === "fulfilled" ? usageResult.value : null;
+  const usingMockUsage = isDev && !apiUsage?.daily_breakdown?.length;
+  const usage = usingMockUsage ? MOCK_USAGE : apiUsage;
+
+  // Pre-format chart points server-side — converts bytes → GB and formats date labels
+  const usagePoints = buildUsagePoints(usage);
 
   return (
     <>
@@ -137,6 +171,9 @@ export default async function OverviewPage() {
           subtitle="All time"
         />
       </div>
+
+      {/* ── Bandwidth usage chart ───────────────────────────────────────── */}
+      <UsageChart points={usagePoints} total={`${usage?.summary.total_gb ?? 0} GB`} />
 
       {/* ── Plans preview + recent transactions ─────────────────────────── */}
       <div className="grid gap-4 lg:grid-cols-2">

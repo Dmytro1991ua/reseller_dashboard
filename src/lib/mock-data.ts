@@ -1,4 +1,4 @@
-import type { Plan, MetricsSummary } from "@/types/api";
+import type { Plan, MetricsSummary, UsageSummary } from "@/types/api";
 
 export const MOCK_PLANS: Plan[] = [
   {
@@ -139,3 +139,29 @@ const MOCK_METRICS: Record<string, MetricsSummary> = {
 export function getMockMetrics(planId: string): MetricsSummary | undefined {
   return MOCK_METRICS[planId];
 }
+
+// 30 days of deterministic daily bandwidth usage for the Overview chart
+export const MOCK_USAGE: UsageSummary = {
+  time_range: { start: 1_780_000_000, end: 1_782_592_000, period: "day" },
+  summary: {
+    total_bytes: 14_523_000_000,
+    total_gb: 14.52,
+    total_requests: 125_000,
+    active_plans: 2,
+  },
+  by_product: {
+    "residential-lite": { bytes: 8_000_000_000, plans: 1 },
+    datacenter: { bytes: 6_523_000_000, plans: 1 },
+  },
+  daily_breakdown: Array.from({ length: 30 }, (_, i) => {
+    const d = new Date("2026-06-02T00:00:00.000Z");
+    d.setUTCDate(d.getUTCDate() - (29 - i));
+    const mb = 150 + ((i * 73 + 23) % 650);
+    const bytes = mb * 1_000_000;
+    return {
+      date: d.toISOString().slice(0, 10),
+      bytes,
+      gb: Number.parseFloat((bytes / 1_000_000_000).toFixed(2)),
+    };
+  }),
+};
