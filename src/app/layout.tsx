@@ -19,12 +19,26 @@ export const metadata: Metadata = {
   description: "Reseller management dashboard for FlashProxy",
 };
 
+// Runs synchronously before React hydration to avoid theme flash
+const themeScript = `(function(){
+  var s=localStorage.getItem('theme');
+  var d=s?s==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if(d)document.documentElement.classList.add('dark');
+})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="bg-background min-h-screen font-sans antialiased">
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className="min-h-screen font-sans antialiased">
         <TooltipProvider delay={300}>{children}</TooltipProvider>
-        <Toaster richColors position="top-right" />
+        <Toaster richColors closeButton position="top-right" />
       </body>
     </html>
   );

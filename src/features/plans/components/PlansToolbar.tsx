@@ -58,10 +58,10 @@ export function PlansToolbar() {
         placeholder="Search plans…"
         value={search}
         onChange={(e) => handleSearch(e.target.value)}
-        className="max-w-xs"
+        className="max-w-xs bg-white"
       />
       <Select value={searchParams.get("status") ?? "all"} onValueChange={handleStatus}>
-        <SelectTrigger className="w-40">
+        <SelectTrigger className="w-40 bg-white">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

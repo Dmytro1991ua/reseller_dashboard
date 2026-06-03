@@ -42,7 +42,7 @@ export function TransactionsToolbar() {
   return (
     <div className="flex items-center gap-3">
       <Select value={searchParams.get("type") ?? "all"} onValueChange={handleType}>
-        <SelectTrigger className="w-44">
+        <SelectTrigger className="w-44 bg-white">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

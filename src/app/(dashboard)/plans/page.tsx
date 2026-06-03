@@ -121,13 +121,17 @@ export default async function PlansPage({
 
   return (
     <>
-      <div className="flex items-center justify-between gap-3">
-        <PlansToolbar />
+      <div className="flex items-start justify-between border-b-2 pb-2">
+        <div>
+          <h1 className="text-2xl font-bold">Plans</h1>
+        </div>
         <Link href="/plans/new" className={buttonVariants({ size: "sm" })}>
           <Plus className="size-4" />
           New Plan
         </Link>
       </div>
+
+      <PlansToolbar />
 
       <Card>
         <CardContent className="p-0">

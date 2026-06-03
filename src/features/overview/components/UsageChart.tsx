@@ -25,7 +25,7 @@ export function UsageChart({ points, total }: Readonly<UsageChartProps>) {
   const hasData = points.some((p) => p.gb > 0);
 
   return (
-    <Card>
+    <Card className="overflow-visible">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-base">Bandwidth Usage</CardTitle>
         <span className="text-muted-foreground text-sm">{total} · last 30 days</span>

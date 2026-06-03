@@ -100,6 +100,10 @@ export default async function TransactionsPage({
 
   return (
     <>
+      <div className="border-b-2 pb-2">
+        <h1 className="text-2xl font-bold">Transactions</h1>
+      </div>
+
       <TransactionsToolbar />
 
       <Card>
