@@ -9,29 +9,23 @@ A full-featured reseller management dashboard for the [FlashProxy](https://flash
 ## Screenshots
 
 ### Overview
-
-<img src="https://github.com/user-attachments/assets/599fdc5a-0344-4a04-a796-92e062e37688" width="100%"/>
+<img width="1920" height="836" alt="Screenshot 2026-06-03 at 17 27 05" src="https://github.com/user-attachments/assets/5d7b9d75-db02-41c0-a2be-40d536034ed2" />
 
 ### Plans
-
-<img src="https://github.com/user-attachments/assets/10636881-3bef-4b7d-8e0b-c45b2322caba" width="100%"/>
+<img width="1917" height="847" alt="Screenshot 2026-06-03 at 17 27 46" src="https://github.com/user-attachments/assets/516a6aa4-1efb-4614-af11-616b8e0dc078" />
 
 ### Transactions
-
-<img src="https://github.com/user-attachments/assets/56e1b88d-7584-4b0e-a995-a2a0941144bb" width="100%"/>
+<img width="1918" height="837" alt="Screenshot 2026-06-03 at 17 28 27" src="https://github.com/user-attachments/assets/c7abea15-2f0b-49ec-a300-f770d273352a" />
 
 ### Plan Detail
-
-<img src="https://github.com/user-attachments/assets/c8d6984d-bbc4-449a-98b2-cc71b6493d77" width="100%"/>
+<img width="1902" height="839" alt="Screenshot 2026-06-03 at 17 29 33" src="https://github.com/user-attachments/assets/34b33c95-28b8-4274-a567-4d900323d605" />
 
 ### Login
-
-<img src="https://github.com/user-attachments/assets/0018bbec-b0b1-4464-8799-57e1b7cf3e1d" width="100%"/>
+<img width="1908" height="841" alt="Screenshot 2026-06-03 at 17 30 14" src="https://github.com/user-attachments/assets/7cd01b2b-e0c1-455f-8c07-649909968a23" />
 
 ### Theme
-
-<img width="1893" height="831" alt="Screenshot 2026-06-03 at 12 32 01" src="https://github.com/user-attachments/assets/c5ded19c-abb6-4d3e-a69f-d461717e5880" />
-<img width="1913" height="835" alt="Screenshot 2026-06-03 at 12 33 16" src="https://github.com/user-attachments/assets/68a2612b-fcf2-4a67-8f46-ee1871532424" />
+<img width="1897" height="834" alt="Screenshot 2026-06-03 at 17 31 04" src="https://github.com/user-attachments/assets/635e8595-fb37-4931-9fb0-4f57759452f6" />
+<img width="1916" height="837" alt="Screenshot 2026-06-03 at 17 32 03" src="https://github.com/user-attachments/assets/9e0f4212-fa3f-4045-8168-61f5752e88f3" />
 
 ## Prerequisites
 
