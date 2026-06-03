@@ -9,21 +9,27 @@ A full-featured reseller management dashboard for the [FlashProxy](https://flash
 ## Screenshots
 
 ### Overview
+
 <img src="https://github.com/user-attachments/assets/599fdc5a-0344-4a04-a796-92e062e37688" width="100%"/>
 
 ### Plans
+
 <img src="https://github.com/user-attachments/assets/10636881-3bef-4b7d-8e0b-c45b2322caba" width="100%"/>
 
 ### Transactions
+
 <img src="https://github.com/user-attachments/assets/56e1b88d-7584-4b0e-a995-a2a0941144bb" width="100%"/>
 
 ### Plan Detail
+
 <img src="https://github.com/user-attachments/assets/c8d6984d-bbc4-449a-98b2-cc71b6493d77" width="100%"/>
 
 ### Login
+
 <img src="https://github.com/user-attachments/assets/0018bbec-b0b1-4464-8799-57e1b7cf3e1d" width="100%"/>
 
 ### Theme
+
 <img width="1893" height="831" alt="Screenshot 2026-06-03 at 12 32 01" src="https://github.com/user-attachments/assets/c5ded19c-abb6-4d3e-a69f-d461717e5880" />
 <img width="1913" height="835" alt="Screenshot 2026-06-03 at 12 33 16" src="https://github.com/user-attachments/assets/68a2612b-fcf2-4a67-8f46-ee1871532424" />
 

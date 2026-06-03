@@ -61,28 +61,30 @@
 }
 
 :root {
-  /* background: very light lavender-white */
-  --background: oklch(0.971 0.007 276);
-  /* gradient bg — top is slightly more purple, bottom is near-white */
-  --bg-top: oklch(0.958 0.016 278);
-  --bg-bottom: oklch(0.99 0.003 276);
-  --foreground: oklch(0.15 0.025 280);
+  --background: oklch(0.958 0.014 276);
+  /* gradient: rich lavender top → near-white bottom, clearly visible */
+  --bg-top: oklch(0.938 0.026 278);
+  --bg-bottom: oklch(0.984 0.005 276);
+  --foreground: oklch(0.16 0.018 280);
+  /* cards: pure white, clear separation from the tinted background */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.025 280);
+  --card-foreground: oklch(0.16 0.018 280);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.025 280);
-  /* purple/violet brand */
+  --popover-foreground: oklch(0.16 0.018 280);
+  /* primary: brand purple — full strength */
   --primary: oklch(0.548 0.224 287);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.945 0.012 278);
-  --secondary-foreground: oklch(0.25 0.03 280);
-  --muted: oklch(0.945 0.012 278);
-  --muted-foreground: oklch(0.52 0.035 278);
-  --accent: oklch(0.92 0.025 280);
-  --accent-foreground: oklch(0.25 0.03 280);
+  /* secondary/muted: softer than before but still characterful */
+  --secondary: oklch(0.952 0.009 278);
+  --secondary-foreground: oklch(0.26 0.02 280);
+  --muted: oklch(0.952 0.009 278);
+  --muted-foreground: oklch(0.54 0.022 278);
+  --accent: oklch(0.932 0.015 280);
+  --accent-foreground: oklch(0.26 0.02 280);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.905 0.018 280);
-  --input: oklch(0.905 0.018 280);
+  /* borders: lighter than before (0.018→0.012) but still clearly visible */
+  --border: oklch(0.912 0.012 278);
+  --input: oklch(0.912 0.012 278);
   --ring: oklch(0.548 0.224 287);
   --chart-1: oklch(0.548 0.224 287);
   --chart-2: oklch(0.668 0.19 290);
@@ -90,14 +92,15 @@
   --chart-4: oklch(0.72 0.16 150);
   --chart-5: oklch(0.62 0.2 50);
   --radius: 0.75rem;
-  /* sidebar: transparent in light mode — shows the SidebarProvider gradient */
-  --sidebar: transparent;
-  --sidebar-foreground: oklch(0.15 0.025 280);
+  /* sidebar: semi-transparent white overlay so it reads slightly lighter than the gradient content */
+  --sidebar: oklch(1 0 0 / 30%);
+  --sidebar-foreground: oklch(0.16 0.018 280);
   --sidebar-primary: oklch(0.548 0.224 287);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.945 0.012 278);
-  --sidebar-accent-foreground: oklch(0.25 0.03 280);
-  --sidebar-border: oklch(0.905 0.018 280);
+  --sidebar-accent: oklch(0.952 0.009 278);
+  --sidebar-accent-foreground: oklch(0.26 0.02 280);
+  /* sidebar border: visible separator, purple-tinted */
+  --sidebar-border: oklch(0.875 0.018 278);
   --sidebar-ring: oklch(0.548 0.224 287);
 }
 
@@ -222,8 +225,8 @@
   /* Card elevation — subtle shadow for depth */
   [data-slot="card"] {
     box-shadow:
-      0 1px 3px 0 rgb(0 0 0 / 0.07),
-      0 1px 2px -1px rgb(0 0 0 / 0.04);
+      0 1px 4px 0 rgb(0 0 0 / 0.1),
+      0 2px 6px -1px rgb(0 0 0 / 0.07);
   }
   .dark [data-slot="card"] {
     box-shadow:
@@ -234,6 +237,13 @@
   /* Clickable table rows */
   tr[data-clickable] {
     cursor: pointer;
+  }
+}
+
+/* Reusable page gradient — same 135° sweep used on SidebarProvider and header */
+@layer utilities {
+  .bg-page-gradient {
+    background: linear-gradient(135deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
   }
 }
 

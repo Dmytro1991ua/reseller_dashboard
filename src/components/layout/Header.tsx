@@ -41,7 +41,7 @@ export function Header() {
   const crumbs = getCrumbs(pathname);
 
   return (
-    <header className="from-primary/8 via-primary/8 to-primary/4 supports-backdrop-filter:bg-background/80 sticky top-0 z-50 flex h-14 shrink-0 items-center gap-2 border-b bg-linear-to-br px-4 backdrop-blur-sm">
+    <header className="bg-page-gradient sticky top-0 z-50 flex h-14 shrink-0 items-center gap-2 border-b px-4 backdrop-blur-sm">
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="mr-2 h-auto" />
 
