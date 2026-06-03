@@ -53,7 +53,11 @@ export function AppSidebar() {
       <SidebarHeader className="border-b-2 pb-0">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" render={<Link href="/" />}>
+            <SidebarMenuButton
+              size="lg"
+              className="hover:bg-transparent"
+              render={<Link href="/" />}
+            >
               <div className="bg-primary flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg shadow-sm">
                 <Zap className="text-primary-foreground size-4" />
               </div>
