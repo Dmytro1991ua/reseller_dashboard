@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { ChevronLeft, Loader2 } from "lucide-react";
@@ -412,12 +412,13 @@ export function CreatePlanForm() {
   const [confirming, setConfirming] = useState(false);
 
   // ISP pools for dedicated_isp — fetched once on demand
+  // poolsLoading is derived: isDedicated && pools === null means loading/pending
   const [pools, setPools] = useState<IspPool[] | null>(null);
-  const [poolsLoading, setPoolsLoading] = useState(false);
+  const poolsFetchStarted = useRef(false);
 
   const {
     register,
-    watch,
+    control,
     setValue,
     getValues,
     formState: { isValid, errors },
@@ -433,9 +434,12 @@ export function CreatePlanForm() {
     mode: "onChange",
   });
 
-  const product = watch("product");
-  const billingType = watch("billing_type");
-  const duration = watch("duration");
+  // useWatch is the React-Compiler-compatible alternative to watch()
+  const product = useWatch({ control, name: "product" });
+  const billingType = useWatch({ control, name: "billing_type" });
+  const duration = useWatch({ control, name: "duration" });
+  const watchedPool = useWatch({ control, name: "pool" });
+  const watchedLocation = useWatch({ control, name: "location" });
 
   const isBandwidth = BANDWIDTH_SET.has(product ?? "");
   const isHybrid = HYBRID_SET.has(product ?? "");
@@ -448,19 +452,18 @@ export function CreatePlanForm() {
   const showMbps = isHybrid && billingType === "time";
   const showBandwidthMbps = isUnlimited && !!duration && duration !== "trial";
 
-  // Fetch dedicated_isp pools on demand
+  // Fetch dedicated_isp pools exactly once — use a ref guard to prevent concurrent fetches
   useEffect(() => {
-    if (!isDedicated || pools !== null || poolsLoading) return;
-    setPoolsLoading(true);
+    if (!isDedicated || pools !== null || poolsFetchStarted.current) return;
+    poolsFetchStarted.current = true;
     fetch("/api/proxy/proxies/pools")
-      .then((r) => r.json())
-      .then((raw) => {
-        const data = (raw.data ?? raw) as { pools: IspPool[] };
-        setPools(data.pools ?? []);
+      .then((r) => (r.ok ? r.json() : null))
+      .then((raw: Record<string, unknown> | null) => {
+        const data = (raw?.data ?? raw) as { pools?: IspPool[] } | null;
+        setPools(data?.pools ?? []);
       })
-      .catch(() => setPools([]))
-      .finally(() => setPoolsLoading(false));
-  }, [isDedicated, pools, poolsLoading]);
+      .catch(() => setPools([]));
+  }, [isDedicated, pools]);
 
   function handleProductChange(value: string | null) {
     if (!value) return;
@@ -563,7 +566,7 @@ export function CreatePlanForm() {
   }
 
   return (
-    <div className="max-w-md space-y-6">
+    <div className="bg-card max-w-md space-y-6 rounded-xl p-4">
       {/* Product */}
       <div className="space-y-2">
         <Label>Product</Label>
@@ -719,14 +722,14 @@ export function CreatePlanForm() {
 
           <div className="space-y-2">
             <Label>Pool</Label>
-            {poolsLoading ? (
+            {isDedicated && pools === null ? (
               <div className="text-muted-foreground flex items-center gap-2 text-sm">
                 <Loader2 className="size-4 animate-spin" />
                 Loading pools…
               </div>
             ) : (
               <Select
-                value={watch("pool") ?? ""}
+                value={watchedPool ?? ""}
                 onValueChange={(v) => setValue("pool", v ?? undefined, { shouldValidate: true })}
               >
                 <SelectTrigger className="w-64">
@@ -760,7 +763,7 @@ export function CreatePlanForm() {
             Location <span className="text-muted-foreground text-xs font-normal">(optional)</span>
           </Label>
           <Select
-            value={watch("location") ?? ""}
+            value={watchedLocation ?? ""}
             onValueChange={(v) =>
               setValue("location", v ? (v as "NL" | "UK") : undefined, { shouldValidate: true })
             }

@@ -253,8 +253,8 @@ export function PlanCredentials({ plan }: Readonly<{ plan: Plan }>) {
 
         {/* Full connection string */}
         <div className="pt-4 pb-2">
-          <p className="text-muted-foreground mb-2 text-xs">Full format</p>
-          <div className="bg-muted flex items-center gap-3 rounded-md py-3">
+          <p className="text-muted-foreground mb-2 p-2 text-xs">Full format</p>
+          <div className="bg-muted flex items-center gap-3 rounded-md px-1.5 py-3">
             <code className="min-w-0 flex-1 font-mono text-xs break-all">
               {plan.connection.format}
             </code>

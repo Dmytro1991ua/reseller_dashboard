@@ -14,6 +14,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 const navItems = [
@@ -30,6 +31,11 @@ function isNavActive(pathname: string, href: string, exact: boolean) {
 export function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  function closeMobile() {
+    if (isMobile) setOpenMobile(false);
+  }
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -38,14 +44,18 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar collapsible="icon" variant="sidebar">
+    <Sidebar
+      collapsible="icon"
+      variant="sidebar"
+      className="from-primary/8 via-primary/8 to-primary/4 bg-linear-to-br"
+    >
       {/* Brand */}
-      <SidebarHeader>
+      <SidebarHeader className="border-b-2 pb-0">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" render={<Link href="/" />}>
-              <div className="bg-primary text-primary-foreground flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg">
-                <Zap className="size-4" />
+              <div className="bg-primary flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg shadow-sm">
+                <Zap className="text-primary-foreground size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
                 <span className="font-semibold tracking-tight">FlashProxy</span>
@@ -56,7 +66,7 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarHeader>
 
-      {/* Navigation — 3 items, no group label needed */}
+      {/* Navigation */}
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
@@ -67,6 +77,8 @@ export function AppSidebar() {
                     render={<Link href={item.href} />}
                     isActive={isNavActive(pathname, item.href, item.exact)}
                     tooltip={item.label}
+                    className="mb-2 transition-all duration-200"
+                    onClick={closeMobile}
                   >
                     <item.icon />
                     <span>{item.label}</span>
@@ -78,7 +90,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      {/* Footer: settings + logout */}
+      {/* Footer */}
       <SidebarFooter>
         <SidebarSeparator />
         <SidebarMenu>
@@ -87,6 +99,8 @@ export function AppSidebar() {
               render={<Link href="/settings" />}
               isActive={isNavActive(pathname, "/settings", true)}
               tooltip="Settings"
+              className="transition-all duration-200"
+              onClick={closeMobile}
             >
               <Settings />
               <span>Settings</span>
@@ -96,7 +110,7 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip="Log out"
-              className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+              className="text-destructive hover:bg-destructive/10 hover:text-destructive transition-all duration-200"
               onClick={handleLogout}
             >
               <LogOut />

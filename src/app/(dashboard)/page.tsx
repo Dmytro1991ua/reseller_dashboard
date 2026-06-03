@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { flashproxyFetch } from "@/lib/api-client";
+import { buttonVariants } from "@/components/ui/button";
 import { getSession } from "@/lib/session";
 import type {
   Balance,
@@ -140,18 +142,30 @@ export default async function OverviewPage() {
 
   return (
     <>
+      {/* ── Balance hero ─────────────────────────────────────────────────── */}
+      <div className="from-primary/25 via-primary/12 to-primary/5 relative rounded-xl border bg-linear-to-br p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-1">
+            <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+              Available Balance
+            </p>
+            <p className="text-4xl font-bold tabular-nums">{balance?.balance_formatted ?? "—"}</p>
+            <p className="text-muted-foreground text-sm">
+              All time spent:{" "}
+              <span className="text-foreground font-medium">
+                {balance?.total_spent_formatted ?? "—"}
+              </span>
+            </p>
+          </div>
+          <Link href="/plans/new" className={buttonVariants({ size: "sm" })}>
+            <Plus className="size-4" />
+            New Plan
+          </Link>
+        </div>
+      </div>
+
       {/* ── Stat cards ──────────────────────────────────────────────────── */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          title="Balance"
-          value={balance?.balance_formatted ?? "—"}
-          subtitle="Available credit"
-        />
-        <StatCard
-          title="Total Spent"
-          value={balance?.total_spent_formatted ?? "—"}
-          subtitle="All time"
-        />
+      <div className="grid gap-4 sm:grid-cols-2">
         <StatCard title="Total Plans" value={String(planTotal)} subtitle="All statuses" />
         <StatCard
           title="Transactions"

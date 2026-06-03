@@ -211,7 +211,7 @@ export default async function PlanDetailPage({
           <ChevronLeft className="size-4" /> Back to Plans
         </Link>
 
-        <div className="flex items-start justify-between">
+        <div className="between flex items-start justify-between border-b-2 pb-2">
           <div className="space-y-1">
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold">{PRODUCT_LABELS[plan.product] ?? plan.product}</h1>

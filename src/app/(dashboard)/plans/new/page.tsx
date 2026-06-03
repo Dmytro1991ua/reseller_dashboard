@@ -15,11 +15,13 @@ export default function NewPlanPage() {
         >
           <ChevronLeft className="size-4" /> Back to Plans
         </Link>
-        <h1 className="text-2xl font-bold">New Plan</h1>
-        <p className="text-muted-foreground text-sm">
-          Select a product and configure your plan. You&apos;ll see the exact cost before
-          confirming.
-        </p>
+        <div className="border-b-2 pb-2">
+          <h1 className="text-2xl font-bold">New Plan</h1>
+          <p className="text-muted-foreground text-sm">
+            Select a product and configure your plan. You&apos;ll see the exact cost before
+            confirming.
+          </p>
+        </div>
       </div>
 
       <CreatePlanForm />
