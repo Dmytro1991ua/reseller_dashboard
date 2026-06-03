@@ -114,8 +114,6 @@ Before running, confirm:
 | `SESSION_SECRET`           | `.env.local` | ✅       | iron-session encryption password (min 32 chars) |
 | `DATABASE_URL`             | `.env`       | ✅       | SQLite file path — use `file:./dev.db`          |
 
-> **No `FLASHPROXY_API_KEY` env var needed.** The API key is entered by the user on the login page and stored in their encrypted session cookie. The server reads it from the session on every request — credentials are never hardcoded in the environment.
-
 ---
 
 ## Features
