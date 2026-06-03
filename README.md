@@ -21,62 +21,100 @@ A full-featured reseller management dashboard for the [FlashProxy](https://flash
 ## Prerequisites
 
 - Node.js 20+
-- A FlashProxy reseller API key (`fp_live_...` for production, `fp_test_...` for sandbox)
+- A FlashProxy reseller API key — starts with `fp_live_` (production) or `fp_test_` (sandbox)
 
 ---
 
 ## Quick Start
 
-### 1. Install dependencies
+### 1. Install packages
 
 ```bash
 npm install
 ```
 
-### 2. Configure environment
+---
 
-Create `.env.local` in the project root:
+### 2. Set up environment files
 
-```env
-# FlashProxy API base URL
-# Sandbox:
-NEXT_PUBLIC_API_BASE_URL=https://rapi.flashproxy.com/sandbox/api/v1
-# Production:
-# NEXT_PUBLIC_API_BASE_URL=https://rapi.flashproxy.com/api/v1
+The project needs **two** env files. Both are gitignored — you must create them manually on every machine.
 
-# FLASHPROXY_API_KEY=your_flash_proxy_api_key
+#### `.env` — database path (not a secret)
 
-# Session encryption key — min 32 random characters
-SESSION_SECRET=change-this-to-a-long-random-string-at-least-32-chars
+Copy the included example:
+
+```bash
+cp .env.example .env
 ```
 
-> **Warning:** Never commit `.env.local`. It is in `.gitignore`.
+The default value is correct for local development. No changes needed:
+
+```env
+DATABASE_URL=file:./dev.db
+```
+
+#### `.env.local` — secrets
+
+Create `.env.local` in the project root and fill in your values:
+
+```env
+# FlashProxy API — use sandbox for development (virtual money, no real charges)
+NEXT_PUBLIC_API_BASE_URL=https://rapi.flashproxy.com/sandbox/api/v1
+
+# Production URL (real balance — use with care):
+# NEXT_PUBLIC_API_BASE_URL=https://rapi.flashproxy.com/api/v1
+
+# Session encryption secret — must be at least 32 characters
+# Generate one with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+SESSION_SECRET=paste-your-generated-secret-here
+```
+
+---
 
 ### 3. Set up the database
 
+Apply the existing migrations and generate the Prisma client:
+
 ```bash
 npx prisma migrate deploy
+npx prisma generate
 ```
 
-Creates `dev.db` (SQLite) with the `AuditEvent` table for login/logout/mutation logging.
+This creates `dev.db` (SQLite) in the project root. It is gitignored and stores audit logs only.
 
-### 4. Run
+---
+
+### 4. Start the dev server
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) and log in with your FlashProxy API key.
+Open [http://localhost:3000](http://localhost:3000) — you will be redirected to the login page. Enter your FlashProxy API key to sign in.
+
+---
+
+### Checklist
+
+Before running, confirm:
+
+- [ ] `npm install` completed without errors
+- [ ] `.env` exists with `DATABASE_URL=file:./dev.db`
+- [ ] `.env.local` exists with `NEXT_PUBLIC_API_BASE_URL` and `SESSION_SECRET` filled in
+- [ ] `npx prisma migrate deploy && npx prisma generate` ran successfully
+- [ ] `npm run dev` is running
 
 ---
 
 ## Environment Variables
 
-| Variable                   | Required | Description                                     |
-| -------------------------- | -------- | ----------------------------------------------- |
-| `NEXT_PUBLIC_API_BASE_URL` | ✅       | FlashProxy API base URL (sandbox or production) |
-| `SESSION_SECRET`           | ✅       | iron-session encryption password (min 32 chars) |
-| `FLASHPROXY_API_KEY`       | ✅       | Issued Falash Proxy API key
+| Variable                   | File         | Required | Description                                     |
+| -------------------------- | ------------ | -------- | ----------------------------------------------- |
+| `NEXT_PUBLIC_API_BASE_URL` | `.env.local` | ✅       | FlashProxy API base URL (sandbox or production) |
+| `SESSION_SECRET`           | `.env.local` | ✅       | iron-session encryption password (min 32 chars) |
+| `DATABASE_URL`             | `.env`       | ✅       | SQLite file path — use `file:./dev.db`          |
+
+> **No `FLASHPROXY_API_KEY` env var needed.** The API key is entered by the user on the login page and stored in their encrypted session cookie. The server reads it from the session on every request — credentials are never hardcoded in the environment.
 
 ---
 
