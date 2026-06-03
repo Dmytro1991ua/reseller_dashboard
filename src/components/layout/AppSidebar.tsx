@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, Layers, Receipt, Settings, LogOut, Zap } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   Sidebar,
   SidebarContent,
@@ -31,7 +32,8 @@ function isNavActive(pathname: string, href: string, exact: boolean) {
 export function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { isMobile, setOpenMobile } = useSidebar();
+  const { isMobile, setOpenMobile, open } = useSidebar();
+  console.log(open);
 
   function closeMobile() {
     if (isMobile) setOpenMobile(false);
@@ -50,7 +52,7 @@ export function AppSidebar() {
       className="from-primary/8 via-primary/8 to-primary/4 bg-linear-to-br"
     >
       {/* Brand */}
-      <SidebarHeader className="border-b-2 pb-0">
+      <SidebarHeader className={cn("border-b-2", open ? "pb-0" : "pb-4")}>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
