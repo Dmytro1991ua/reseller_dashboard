@@ -44,6 +44,8 @@ NEXT_PUBLIC_API_BASE_URL=https://rapi.flashproxy.com/sandbox/api/v1
 # Production:
 # NEXT_PUBLIC_API_BASE_URL=https://rapi.flashproxy.com/api/v1
 
+# FLASHPROXY_API_KEY=your_flash_proxy_api_key
+
 # Session encryption key — min 32 random characters
 SESSION_SECRET=change-this-to-a-long-random-string-at-least-32-chars
 ```
@@ -74,6 +76,7 @@ Open [http://localhost:3000](http://localhost:3000) and log in with your FlashPr
 | -------------------------- | -------- | ----------------------------------------------- |
 | `NEXT_PUBLIC_API_BASE_URL` | ✅       | FlashProxy API base URL (sandbox or production) |
 | `SESSION_SECRET`           | ✅       | iron-session encryption password (min 32 chars) |
+| `FLASHPROXY_API_KEY`       | ✅       | Issued Falash Proxy API key
 
 ---
 
