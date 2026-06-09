@@ -29,10 +29,10 @@ A full-featured self-contained reseller management dashboard. Manage proxy plans
 <img width="1908" height="841" alt="Screenshot 2026-06-03 at 17 30 14" src="https://github.com/user-attachments/assets/7cd01b2b-e0c1-455f-8c07-649909968a23" />
 
 ### Theme
+
 <img width="1719" height="865" alt="Screenshot 2026-06-09 at 16 10 08" src="https://github.com/user-attachments/assets/6ff2d1b6-61b0-4ede-b3f9-b1433d553a35" />
 
-<img width="1915" height="836" alt="Screenshot 2026-06-09 at 22 13 29" src="https://github.com/user-attachments/assets/cd9df101-4fd6-4b48-9b9c-fd6fed356f89" />
----
+## <img width="1915" height="836" alt="Screenshot 2026-06-09 at 22 13 29" src="https://github.com/user-attachments/assets/cd9df101-4fd6-4b48-9b9c-fd6fed356f89" />
 
 ## Architecture
 
@@ -48,7 +48,7 @@ No third-party reseller API key is required. No charges are incurred by any acti
 
 ## Prerequisites
 
-- Node.js 20+
+- Node.js 20+ — must be active **before** running `npm install` (`better-sqlite3` is a native module compiled at install time). If you use nvm: `nvm use 22` (or `nvm install 22`) first.
 
 ---
 
@@ -91,7 +91,7 @@ npx prisma db seed
 The seed creates:
 
 - An **admin user**: `admin@proxydesk.local` / `proxydesk123`
-- A starting **balance** of `$500.00`
+- A **$500.00 top-up**, reduced to **$469.00** after the three sample plan purchases ($10 + $15 + $6)
 - Three **sample plans** (datacenter, residential, shared_isp)
 - Sample transactions
 
