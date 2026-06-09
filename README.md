@@ -29,9 +29,8 @@ A full-featured self-contained reseller management dashboard. Manage proxy plans
 <img width="1908" height="841" alt="Screenshot 2026-06-03 at 17 30 14" src="https://github.com/user-attachments/assets/7cd01b2b-e0c1-455f-8c07-649909968a23" />
 
 ### Theme
-
-<img width="1897" height="834" alt="Screenshot 2026-06-03 at 17 31 04" src="https://github.com/user-attachments/assets/635e8595-fb37-4931-9fb0-4f57759452f6" />
-<img width="1916" height="837" alt="Screenshot 2026-06-03 at 17 32 03" src="https://github.com/user-attachments/assets/9e0f4212-fa3f-4045-8168-61f5752e88f3" />
+<img width="1719" height="865" alt="Screenshot 2026-06-09 at 16 10 08" src="https://github.com/user-attachments/assets/6ff2d1b6-61b0-4ede-b3f9-b1433d553a35" />
+<img width="1705" height="861" alt="Screenshot 2026-06-09 at 16 10 53" src="https://github.com/user-attachments/assets/df5b07ff-191a-4690-83b8-c6e7a8441bc8" />
 
 ---
 
