@@ -10,19 +10,19 @@ A full-featured self-contained reseller management dashboard. Manage proxy plans
 
 ### Overview
 
-<img width="1920" height="836" alt="Screenshot 2026-06-03 at 17 27 05" src="https://github.com/user-attachments/assets/5d7b9d75-db02-41c0-a2be-40d536034ed2" />
+<img width="1912" height="836" alt="Screenshot 2026-06-09 at 22 06 56" src="https://github.com/user-attachments/assets/ab7d51d3-e827-45d4-b988-b1f4aebf5360" />
 
 ### Plans
 
-<img width="1917" height="847" alt="Screenshot 2026-06-03 at 17 27 46" src="https://github.com/user-attachments/assets/516a6aa4-1efb-4614-af11-616b8e0dc078" />
+<img width="1913" height="841" alt="Screenshot 2026-06-09 at 22 08 53" src="https://github.com/user-attachments/assets/11287154-98df-462a-a432-10bdc3bd4f7d" />
 
 ### Transactions
 
-<img width="1918" height="837" alt="Screenshot 2026-06-03 at 17 28 27" src="https://github.com/user-attachments/assets/c7abea15-2f0b-49ec-a300-f770d273352a" />
+<img width="1919" height="844" alt="Screenshot 2026-06-09 at 22 11 56" src="https://github.com/user-attachments/assets/7d62d426-f521-479d-8684-fc660ef17eee" />
 
 ### Plan Detail
 
-<img width="1902" height="839" alt="Screenshot 2026-06-03 at 17 29 33" src="https://github.com/user-attachments/assets/34b33c95-28b8-4274-a567-4d900323d605" />
+<img width="1913" height="838" alt="Screenshot 2026-06-09 at 22 12 45" src="https://github.com/user-attachments/assets/28f074ef-f018-4612-8e36-2d8b927c2517" />
 
 ### Login
 
@@ -30,8 +30,8 @@ A full-featured self-contained reseller management dashboard. Manage proxy plans
 
 ### Theme
 <img width="1719" height="865" alt="Screenshot 2026-06-09 at 16 10 08" src="https://github.com/user-attachments/assets/6ff2d1b6-61b0-4ede-b3f9-b1433d553a35" />
-<img width="1705" height="861" alt="Screenshot 2026-06-09 at 16 10 53" src="https://github.com/user-attachments/assets/df5b07ff-191a-4690-83b8-c6e7a8441bc8" />
 
+<img width="1915" height="836" alt="Screenshot 2026-06-09 at 22 13 29" src="https://github.com/user-attachments/assets/cd9df101-4fd6-4b48-9b9c-fd6fed356f89" />
 ---
 
 ## Architecture
