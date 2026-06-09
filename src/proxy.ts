@@ -9,7 +9,7 @@ export async function proxy(request: NextRequest) {
 
   const response = NextResponse.next();
   const session = await getIronSession<SessionData>(request, response, sessionOptions);
-  const authenticated = !!session.apiKey;
+  const authenticated = !!session.userId;
 
   if (!authenticated && !isLoginPage) {
     return NextResponse.redirect(new URL("/login", request.url));

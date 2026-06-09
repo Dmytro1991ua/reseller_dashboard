@@ -4,13 +4,13 @@ import { logEvent } from "@/lib/audit";
 
 export async function POST(req: NextRequest) {
   const session = await getSession();
-  const apiKey = session.apiKey;
+  const userId = session.userId;
 
   session.destroy();
 
-  if (apiKey) {
+  if (userId) {
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-    await logEvent("logout", apiKey, ip);
+    await logEvent("logout", userId, ip);
   }
 
   return NextResponse.json({ ok: true });

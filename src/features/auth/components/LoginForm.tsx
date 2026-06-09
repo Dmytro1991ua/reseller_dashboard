@@ -12,38 +12,30 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 const loginSchema = z.object({
-  apiKey: z
-    .string()
-    .min(1, "API key is required.")
-    .refine(
-      (val) => val.startsWith("fp_live_") || val.startsWith("fp_test_"),
-      "Key must start with fp_live_ or fp_test_.",
-    ),
+  email: z.string().min(1, "Email is required.").email("Enter a valid email."),
+  password: z.string().min(1, "Password is required."),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
   const router = useRouter();
-  const [showKey, setShowKey] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { apiKey: "" },
+    defaultValues: { email: "", password: "" },
   });
-
-  const apiKeyValue = watch("apiKey");
 
   async function onSubmit(data: LoginFormData) {
     const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ apiKey: data.apiKey }),
+      body: JSON.stringify({ email: data.email, password: data.password }),
     });
 
     if (res.ok) {
@@ -58,41 +50,46 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="apiKey">API Key</Label>
+        <Label htmlFor="email">Email</Label>
+        <Input
+          {...register("email")}
+          id="email"
+          type="email"
+          placeholder="admin@proxydesk.local"
+          autoFocus
+          autoComplete="email"
+        />
+        {errors.email && <p className="text-destructive text-xs">{errors.email.message}</p>}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="password">Password</Label>
         <div className="relative">
           <Input
-            {...register("apiKey")}
-            id="apiKey"
-            type={showKey ? "text" : "password"}
-            placeholder="fp_live_..."
-            className="pr-10 font-mono text-sm"
-            autoFocus
-            autoComplete="off"
-            spellCheck={false}
+            {...register("password")}
+            id="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="••••••••"
+            className="pr-10"
+            autoComplete="current-password"
           />
           <button
             type="button"
-            onClick={() => setShowKey((v) => !v)}
+            onClick={() => setShowPassword((v) => !v)}
             className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2"
             tabIndex={-1}
-            aria-label={showKey ? "Hide API key" : "Show API key"}
+            aria-label={showPassword ? "Hide password" : "Show password"}
           >
-            {showKey ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+            {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
           </button>
         </div>
-        {errors.apiKey && <p className="text-destructive text-xs">{errors.apiKey.message}</p>}
+        {errors.password && <p className="text-destructive text-xs">{errors.password.message}</p>}
       </div>
 
-      <Button type="submit" className="w-full" disabled={isSubmitting || !apiKeyValue?.trim()}>
+      <Button type="submit" className="w-full" disabled={isSubmitting}>
         {isSubmitting && <Loader2 className="size-4 animate-spin" />}
-        {isSubmitting ? "Verifying…" : "Sign in"}
+        {isSubmitting ? "Signing in…" : "Sign in"}
       </Button>
-
-      <p className="text-muted-foreground text-xs">
-        Your key starts with <code className="font-mono">fp_live_</code> or{" "}
-        <code className="font-mono">fp_test_</code>. It is never stored on disk — only in an
-        encrypted session cookie.
-      </p>
     </form>
   );
 }

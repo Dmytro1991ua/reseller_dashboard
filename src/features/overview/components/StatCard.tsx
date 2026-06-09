@@ -8,7 +8,7 @@ interface StatCardProps {
 
 export function StatCard({ title, value, subtitle }: StatCardProps) {
   return (
-    <Card className="hover:bg-primary/5 hover:border-primary/20 cursor-default transition-transform duration-200 hover:-translate-y-0.5">
+    <Card className="hover:bg-primary/5 hover:border-primary/20 cursor-default transition-transform duration-300 hover:-translate-y-0.5">
       <CardHeader className="pb-2">
         <CardTitle className="text-muted-foreground text-sm font-medium">{title}</CardTitle>
       </CardHeader>

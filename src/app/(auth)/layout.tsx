@@ -1,4 +1,4 @@
-import { Zap } from "lucide-react";
+import { Globe } from "lucide-react";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
 export default function AuthLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -9,12 +9,12 @@ export default function AuthLayout({ children }: Readonly<{ children: React.Reac
         {/* Animated logo */}
         <div className="animate-logo-float flex items-center gap-5">
           <div className="animate-logo-glow bg-primary flex size-24 items-center justify-center rounded-full">
-            <Zap className="text-primary-foreground size-12" />
+            <Globe className="text-primary-foreground size-12" />
           </div>
 
           <div>
-            <p className="text-3xl font-bold tracking-tight">FlashProxy</p>
-            <p className="text-muted-foreground text-base">Business</p>
+            <p className="text-3xl font-bold tracking-tight">ProxyDesk</p>
+            <p className="text-muted-foreground text-base">Admin</p>
           </div>
         </div>
 

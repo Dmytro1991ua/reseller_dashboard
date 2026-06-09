@@ -272,7 +272,16 @@ function CancelDialog({ plan, open, onOpenChange }: Readonly<CancelDialogProps>)
       return;
     }
 
-    toast.success("Plan cancelled.");
+    const json = (await res.json().catch(() => ({}))) as {
+      data?: { refund_cents?: number; refund_formatted?: string };
+    };
+    const refundCents = json?.data?.refund_cents ?? 0;
+    const refundFormatted = json?.data?.refund_formatted;
+    if (refundCents > 0 && refundFormatted) {
+      toast.success("Plan cancelled. " + refundFormatted + " refunded to your balance.");
+    } else {
+      toast.success("Plan cancelled.");
+    }
     onOpenChange(false);
     router.push("/plans");
     router.refresh();

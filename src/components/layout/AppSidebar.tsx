@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Layers, Receipt, Settings, LogOut, Zap } from "lucide-react";
+import { LayoutDashboard, Layers, Receipt, Settings, LogOut, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Sidebar,
@@ -33,7 +33,6 @@ export function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { isMobile, setOpenMobile, open } = useSidebar();
-  console.log(open);
 
   function closeMobile() {
     if (isMobile) setOpenMobile(false);
@@ -61,10 +60,10 @@ export function AppSidebar() {
               render={<Link href="/" />}
             >
               <div className="bg-primary flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg shadow-sm">
-                <Zap className="text-primary-foreground size-4" />
+                <Globe className="text-primary-foreground size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
-                <span className="font-semibold tracking-tight">FlashProxy</span>
+                <span className="font-semibold tracking-tight">ProxyDesk</span>
                 <span className="text-muted-foreground text-[11px]">Reseller Dashboard</span>
               </div>
             </SidebarMenuButton>

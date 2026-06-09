@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Zap } from "lucide-react";
+import { Globe } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 
@@ -11,12 +11,12 @@ export default function LoginPage() {
       <CardHeader className="space-y-1">
         <div className="mb-2 flex items-center gap-2">
           <div className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-lg">
-            <Zap className="size-4" />
+            <Globe className="size-4" />
           </div>
-          <span className="font-semibold">FlashProxy</span>
+          <span className="font-semibold">ProxyDesk</span>
         </div>
-        <CardTitle className="text-2xl">Reseller Dashboard</CardTitle>
-        <CardDescription>Enter your FlashProxy API key to access your account.</CardDescription>
+        <CardTitle className="text-2xl">Admin Dashboard</CardTitle>
+        <CardDescription>Sign in with your admin credentials.</CardDescription>
       </CardHeader>
       <CardContent>
         <LoginForm />

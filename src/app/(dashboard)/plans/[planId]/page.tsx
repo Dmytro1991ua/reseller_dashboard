@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
-import { flashproxyFetch } from "@/lib/api-client";
-import { getSession } from "@/lib/session";
+import { dbFetch } from "@/lib/dbFetch";
 import type { Plan, PlanStatus, MetricsSummary } from "@/types/api";
 import { PlanCredentials } from "@/features/plans/components/PlanCredentials";
 import { PlanActions } from "@/features/plans/components/PlanActions";
@@ -16,8 +15,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Plan Detail" };
-
-// ─── helpers ─────────────────────────────────────────────────────────────────
 
 function formatUSD(cents: number) {
   return new Intl.NumberFormat("en-US", {
@@ -60,7 +57,7 @@ const PRODUCT_LABELS: Record<string, string> = {
 };
 
 const STATUS_CLASS: Record<PlanStatus, string> = {
-  active: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  active: "bg-green-300 text-green-700 dark:bg-green-900/30 dark:text-green-400",
   pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
   provisioning: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
   inactive: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400",
@@ -81,8 +78,6 @@ const METRICS_PRODUCTS = new Set([
   "ipv6-datacenter",
   "ipv6-residential",
 ]);
-
-// ─── sub-components ───────────────────────────────────────────────────────────
 
 function InfoRow({ label, value }: Readonly<{ label: string; value: string }>) {
   return (
@@ -111,20 +106,13 @@ function StatCard({
   );
 }
 
-// ─── data helpers ────────────────────────────────────────────────────────────
-
-async function fetchPlan(apiKey: string, planId: string): Promise<Plan | null> {
-  return flashproxyFetch<Plan>(apiKey, `/plans/${planId}`, { revalidate: 60 }).catch(() => null);
+async function fetchPlan(planId: string): Promise<Plan | null> {
+  return dbFetch<Plan>(`/plans/${planId}`).catch(() => null);
 }
 
-async function fetchMetrics(apiKey: string, planId: string): Promise<MetricsSummary | null> {
-  return flashproxyFetch<MetricsSummary>(apiKey, `/plans/${planId}/metrics/summary`, {
-    searchParams: { hours: 24 },
-    revalidate: 300,
-  }).catch(() => null);
+async function fetchMetrics(planId: string): Promise<MetricsSummary | null> {
+  return dbFetch<MetricsSummary>(`/plans/${planId}/metrics/summary?hours=24`).catch(() => null);
 }
-
-// ─── metrics tab ──────────────────────────────────────────────────────────────
 
 interface MetricsTabProps {
   hasMetrics: boolean;
@@ -181,24 +169,20 @@ function MetricsTabContent({ hasMetrics, metrics }: Readonly<MetricsTabProps>) {
   );
 }
 
-// ─── page ─────────────────────────────────────────────────────────────────────
-
 export default async function PlanDetailPage({
   params,
 }: Readonly<{
   params: Promise<{ planId: string }>;
 }>) {
   const { planId } = await params;
-  const session = await getSession();
-  const apiKey = session.apiKey ?? "";
 
-  const plan = await fetchPlan(apiKey, planId);
+  const plan = await fetchPlan(planId);
   if (!plan) notFound();
 
   const { bytes_used, max_bytes, max_gb } = plan.limits;
   const usagePercent = max_bytes ? Math.min(100, (bytes_used / max_bytes) * 100) : null;
   const hasMetrics = METRICS_PRODUCTS.has(plan.product);
-  const metrics = hasMetrics ? await fetchMetrics(apiKey, planId) : null;
+  const metrics = hasMetrics ? await fetchMetrics(planId) : null;
 
   return (
     <>
@@ -290,9 +274,6 @@ export default async function PlanDetailPage({
               )}
               {plan.location && <InfoRow label="Location" value={plan.location} />}
               <InfoRow label="Created" value={formatDate(plan.created_at)} />
-              {plan.activated_at && (
-                <InfoRow label="Activated" value={formatDate(plan.activated_at)} />
-              )}
             </CardContent>
           </Card>
         </TabsContent>

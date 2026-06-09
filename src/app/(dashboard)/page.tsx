@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { flashproxyFetch } from "@/lib/api-client";
+import { dbFetch } from "@/lib/dbFetch";
 import { buttonVariants } from "@/components/ui/button";
-import { getSession } from "@/lib/session";
 import type {
   Balance,
   PlansListData,
@@ -19,8 +18,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Overview" };
-
-// ─── helpers ─────────────────────────────────────────────────────────────────
 
 function formatUSD(cents: number) {
   return new Intl.NumberFormat("en-US", {
@@ -90,13 +87,9 @@ const TX_LABELS: Record<Transaction["type"], string> = {
   admin_adjustment: "Adjustment",
 };
 
-// ─── helpers ─────────────────────────────────────────────────────────────────
-
 function buildUsagePoints(usage: UsageSummary | null) {
   if (!usage) return [];
 
-  // API only returns days with actual data — fill the rest with 0 so the chart
-  // always shows a full 30-day window instead of a single dot
   const byDate = new Map(usage.daily_breakdown.map((p) => [p.date, p.gb]));
 
   return Array.from({ length: 30 }, (_, i) => {
@@ -110,26 +103,12 @@ function buildUsagePoints(usage: UsageSummary | null) {
   });
 }
 
-// ─── page ─────────────────────────────────────────────────────────────────────
-
 export default async function OverviewPage() {
-  const session = await getSession();
-  const apiKey = session.apiKey ?? "";
-
   const [balanceResult, plansResult, txResult, usageResult] = await Promise.allSettled([
-    flashproxyFetch<Balance>(apiKey, "/balance", { revalidate: 30 }),
-    flashproxyFetch<PlansListData>(apiKey, "/plans", {
-      searchParams: { per_page: 5, sort: "created_at", order: "desc" },
-      revalidate: 60,
-    }),
-    flashproxyFetch<TransactionsData>(apiKey, "/balance/transactions", {
-      searchParams: { per_page: 5 },
-      revalidate: 30,
-    }),
-    flashproxyFetch<UsageSummary>(apiKey, "/usage/summary", {
-      searchParams: { days: 30 },
-      revalidate: 300,
-    }),
+    dbFetch<Balance>("/balance"),
+    dbFetch<PlansListData>("/plans?per_page=5&sort=created_at&order=desc"),
+    dbFetch<TransactionsData>("/balance/transactions?per_page=5"),
+    dbFetch<UsageSummary>("/balance/usage?period=month"),
   ]);
 
   const balance = balanceResult.status === "fulfilled" ? balanceResult.value : null;
@@ -157,9 +136,9 @@ export default async function OverviewPage() {
               </span>
             </p>
           </div>
-          <Link href="/plans/new" className={buttonVariants({ size: "sm" })}>
+          <Link href="/settings" className={buttonVariants({ size: "sm" })}>
             <Plus className="size-4" />
-            New Plan
+            Add funds
           </Link>
         </div>
       </div>

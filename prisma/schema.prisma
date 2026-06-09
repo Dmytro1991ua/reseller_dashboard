@@ -6,16 +6,96 @@ datasource db {
   provider = "sqlite"
 }
 
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String   @default("Admin")
+  createdAt    DateTime @default(now())
+}
+
+model Balance {
+  id              String   @id @default(cuid())
+  balanceCents    Int      @default(100000)
+  totalSpentCents Int      @default(0)
+  updatedAt       DateTime @updatedAt
+}
+
+model Plan {
+  id                 String    @id @default(cuid())
+  planId             String    @unique
+  product            String
+  billingType        String
+  proxyUsername      String
+  proxyPassword      String
+  hostname           String
+  portHttp           Int
+  portSocks          Int?
+  connectionFormat   String
+  status             String    @default("active")
+  bytesUsed          BigInt    @default(0)
+  maxGb              Float?
+  maxBytes           BigInt?
+  maxMbps            Int?
+  expiresAt          DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  purchasePriceCents Int?
+  endUserReference   String?
+  allowedIps         String    @default("[]")
+  pool               String?
+  quantity           Int?
+  proxyList          String?
+  location           String?
+}
+
+model Transaction {
+  id                String   @id @default(cuid())
+  type              String
+  amountCents       Int
+  description       String
+  planId            String?
+  balanceAfterCents Int
+  createdAt         DateTime @default(now())
+}
+
+model SubUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  status       String   @default("active")
+  balanceCents Int      @default(0)
+  plansCount   Int      @default(0)
+  createdAt    DateTime @default(now())
+}
+
+model Investigation {
+  id              String    @id @default(cuid())
+  investigationId String    @unique
+  planId          String
+  status          String    @default("running")
+  complaint       String
+  elapsedSeconds  Int?
+  createdAt       DateTime  @default(now())
+  completedAt     DateTime?
+  costCents       Int       @default(50)
+  refunded        Boolean   @default(false)
+  severity        String?
+  headline        String?
+  diagnosis       String?
+  errorMessage    String?
+}
+
 model AuditEvent {
   id         String   @id @default(cuid())
-  action     String   // "login" | "logout" | "api_call"
-  apiKeyHash String   // SHA-256 of the key — identifies reseller without storing plaintext
+  action     String
+  userId     String?
   ip         String?
-  method     String?  // HTTP method — set for api_call events (POST, PUT, DELETE, PATCH)
-  path       String?  // FlashProxy API path — set for api_call events
-  statusCode Int?     // Upstream HTTP status — set for api_call events
+  method     String?
+  path       String?
+  statusCode Int?
   createdAt  DateTime @default(now())
 
-  @@index([apiKeyHash])
+  @@index([userId])
   @@index([createdAt])
 }

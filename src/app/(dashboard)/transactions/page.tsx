@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { flashproxyFetch } from "@/lib/api-client";
-import { getSession } from "@/lib/session";
+import { dbFetch } from "@/lib/dbFetch";
 import type { TransactionsData, Transaction } from "@/types/api";
 import { TransactionsToolbar } from "@/features/transactions/components/TransactionsToolbar";
 import { Badge } from "@/components/ui/badge";
@@ -17,8 +16,6 @@ import {
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Transactions" };
-
-// ─── helpers ─────────────────────────────────────────────────────────────────
 
 function formatUSD(cents: number) {
   return new Intl.NumberFormat("en-US", {
@@ -55,8 +52,6 @@ const TX_LABELS: Record<Transaction["type"], string> = {
 
 const PER_PAGE = 20;
 
-// ─── pagination helper ────────────────────────────────────────────────────────
-
 function buildPageUrl(newPage: number, currentParams: Record<string, string | undefined>) {
   const params = new URLSearchParams();
   Object.entries(currentParams).forEach(([k, v]) => {
@@ -68,8 +63,6 @@ function buildPageUrl(newPage: number, currentParams: Record<string, string | un
   return qs ? `/transactions?${qs}` : "/transactions";
 }
 
-// ─── page ─────────────────────────────────────────────────────────────────────
-
 export default async function TransactionsPage({
   searchParams,
 }: Readonly<{
@@ -78,17 +71,10 @@ export default async function TransactionsPage({
   const { page: pageParam, type } = await searchParams;
   const page = Math.max(1, Number(pageParam ?? 1));
 
-  const session = await getSession();
-  const apiKey = session.apiKey ?? "";
+  const qs = new URLSearchParams({ page: String(page), per_page: String(PER_PAGE) });
+  if (type) qs.set("type", type);
 
-  const data = await flashproxyFetch<TransactionsData>(apiKey, "/balance/transactions", {
-    searchParams: {
-      page,
-      per_page: PER_PAGE,
-      ...(type ? { type } : {}),
-    },
-    revalidate: 30,
-  }).catch(() => null);
+  const data = await dbFetch<TransactionsData>(`/balance/transactions?${qs}`).catch(() => null);
 
   const transactions = data?.transactions ?? [];
   const pagination = data?.pagination;
@@ -172,7 +158,6 @@ export default async function TransactionsPage({
         </CardContent>
       </Card>
 
-      {/* Pagination — always visible */}
       <div className="flex items-center justify-between text-sm">
         <span className="text-muted-foreground">
           Page {page} of {Math.max(1, totalPages)} &middot; {total} transaction

@@ -2,12 +2,12 @@ import { getIronSession, type SessionOptions } from "iron-session";
 import { cookies } from "next/headers";
 
 export interface SessionData {
-  apiKey?: string;
+  userId?: string;
   loggedInAt?: string;
 }
 
 export const sessionOptions: SessionOptions = {
-  cookieName: "fp-session",
+  cookieName: "pd-session",
   password: process.env.SESSION_SECRET!,
   ttl: 60 * 60 * 24 * 7, // 7 days
   cookieOptions: {

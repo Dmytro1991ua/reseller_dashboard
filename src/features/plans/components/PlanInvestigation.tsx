@@ -117,7 +117,7 @@ function PastInvestigationRow({ investigation }: Readonly<{ investigation: Inves
   const ChevronIcon = expanded ? ChevronUp : ChevronDown;
 
   return (
-    <div className="rounded-lg border">
+    <div className="bg-card rounded-lg border">
       <button
         type="button"
         className="hover:bg-muted/40 flex w-full items-center gap-2 rounded-lg px-4 py-3 text-left text-sm transition-colors"
@@ -184,7 +184,7 @@ export function PlanInvestigation({ planId }: Readonly<{ planId: string }>) {
       .then((raw: Record<string, unknown> | null) => {
         if (!alive) return;
         const data = (raw?.data ?? raw) as { investigations?: Investigation[] } | null;
-        setPast(data?.investigations ?? []);
+        setPast((data?.investigations ?? []).filter((inv) => inv.status !== "error"));
         setLoadingPast(false);
       })
       .catch(() => {

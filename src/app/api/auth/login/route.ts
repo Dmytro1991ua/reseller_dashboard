@@ -1,41 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
 import { getSession } from "@/lib/session";
 import { logEvent } from "@/lib/audit";
-import { apiConfig } from "@/lib/apiConfig";
+import { db } from "@/lib/db";
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const apiKey: string = (body?.apiKey ?? "").trim();
-
-  if (!apiKey.startsWith("fp_live_") && !apiKey.startsWith("fp_test_")) {
-    return NextResponse.json(
-      { error: "Invalid key format. Must start with fp_live_ or fp_test_." },
-      { status: 400 },
-    );
-  }
-
-  // Validate key with a read-only GET /balance — zero cost, no side effects
-  let ok = false;
+  let email: string, password: string;
   try {
-    const upstream = await fetch(`${apiConfig.baseUrl}/balance`, {
-      headers: { Authorization: `Bearer ${apiKey}` },
-    });
-    ok = upstream.ok;
+    const body = await req.json();
+    email = (body?.email ?? "").trim().toLowerCase();
+    password = body?.password ?? "";
   } catch {
-    return NextResponse.json({ error: "Could not reach FlashProxy API." }, { status: 503 });
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
-  if (!ok) {
-    return NextResponse.json({ error: "API key rejected by FlashProxy." }, { status: 401 });
+  if (!email || !password) {
+    return NextResponse.json({ error: "Email and password are required." }, { status: 400 });
+  }
+
+  const user = await db.user.findUnique({ where: { email } });
+  const valid = user ? await bcrypt.compare(password, user.passwordHash) : false;
+
+  if (!user || !valid) {
+    return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
   }
 
   const session = await getSession();
-  session.apiKey = apiKey;
+  session.userId = user.id;
   session.loggedInAt = new Date().toISOString();
   await session.save();
 
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  await logEvent("login", apiKey, ip);
+  await logEvent("login", user.id, ip);
 
   return NextResponse.json({ ok: true });
 }

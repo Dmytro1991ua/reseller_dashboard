@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight, Plus } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { flashproxyFetch } from "@/lib/api-client";
-import { getSession } from "@/lib/session";
+import { dbFetch } from "@/lib/dbFetch";
 import type { PlansListData, PlanStatus } from "@/types/api";
 import { PlansToolbar } from "@/features/plans/components/PlansToolbar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,8 +17,6 @@ import {
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Plans" };
-
-// ─── helpers ─────────────────────────────────────────────────────────────────
 
 function formatUSD(cents: number) {
   return new Intl.NumberFormat("en-US", {
@@ -67,8 +64,6 @@ const STATUS_CLASS: Record<PlanStatus, string> = {
 
 const PER_PAGE = 20;
 
-// ─── pagination helpers ───────────────────────────────────────────────────────
-
 function buildPageUrl(newPage: number, currentParams: Record<string, string | string[]>) {
   const params = new URLSearchParams();
   Object.entries(currentParams).forEach(([k, v]) => {
@@ -81,8 +76,6 @@ function buildPageUrl(newPage: number, currentParams: Record<string, string | st
   return qs ? `/plans?${qs}` : "/plans";
 }
 
-// ─── page ─────────────────────────────────────────────────────────────────────
-
 export default async function PlansPage({
   searchParams,
 }: Readonly<{
@@ -91,23 +84,18 @@ export default async function PlansPage({
   const { page: pageParam, status, search } = await searchParams;
   const page = Math.max(1, Number(pageParam ?? 1));
 
-  const session = await getSession();
-  const apiKey = session.apiKey ?? "";
+  const qs = new URLSearchParams({
+    page: String(page),
+    per_page: String(PER_PAGE),
+    sort: "created_at",
+    order: "desc",
+  });
+  if (status) qs.set("status", status);
+  if (search) qs.set("search", search);
 
-  const data = await flashproxyFetch<PlansListData>(apiKey, "/plans", {
-    searchParams: {
-      page,
-      per_page: PER_PAGE,
-      ...(status ? { status } : {}),
-      ...(search ? { search } : {}),
-      sort: "created_at",
-      order: "desc",
-    },
-    revalidate: 60,
-  }).catch(() => null);
+  const data = await dbFetch<PlansListData>(`/plans?${qs}`).catch(() => null);
 
   const plans = data?.plans ?? [];
-
   const pagination = data?.pagination;
   const totalPages = pagination?.total_pages ?? 1;
   const total = pagination?.total ?? 0;
@@ -199,7 +187,6 @@ export default async function PlansPage({
         </CardContent>
       </Card>
 
-      {/* Pagination — always visible */}
       <div className="flex items-center justify-between text-sm">
         <span className="text-muted-foreground">
           Page {page} of {Math.max(1, totalPages)} &middot; {total} plan{total === 1 ? "" : "s"}{" "}
